@@ -9,6 +9,13 @@
 #define NUM_STATES 4
 #define NUM_INPUTS 1
 
+struct HyperRect
+{
+    struct Interval dims[NUM_STATES];
+};
+
+extern struct HyperRect rset;
+extern double reachTimeStep;
 extern const double A[NUM_STATES][NUM_STATES];
 extern const double B[NUM_STATES][NUM_INPUTS];
 extern const double K[NUM_INPUTS][NUM_STATES];

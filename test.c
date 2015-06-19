@@ -10,16 +10,7 @@ int main(int argc, char** argv)
 {
   assert(argc == 2);
   const int RNDS = atoi(argv[1]);
-
-  // initial state
-  double state[NUM_STATES] = {0};
-  
-  int i;
-  for(i = 0; i < RNDS; ++i)
-  {
-    // TODO state = RT_REACH_ALG(state);
-    print_state(i, state, NUM_STATES);
-  }
-  
+  const double RUNTIME = 2000; // 20 ms
+  face_lift(RUNTIME); 
   return 0;
 }

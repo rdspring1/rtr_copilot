@@ -1,5 +1,17 @@
 #include "dynamics.h"
 
+struct HyperRect rset =
+{
+    {
+	{-0.1, 0.1},
+	{0.65, 0.85},
+	{0, 10},
+	{0, 10}
+    }
+};
+
+double reachTimeStep = 0.73;
+
 // x' = Ax + Bu
 const double A[NUM_STATES][NUM_STATES] =
 {

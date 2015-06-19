@@ -1,5 +1,7 @@
 #include "util.h"
 
+const double EPSILON = 0.00001;
+
 bool check_bound(struct Interval i, double value)
 {
   if(value > i.max)
@@ -32,13 +34,13 @@ double bound(struct Interval i, double value)
   }
 }
 
-void print_state(const int rnd, double* state, const int SIZE)
+void print_state(const int rnd)
 {
   printf("Round: %d\t", rnd);
   int i;
-  for(i = 0; i < SIZE; ++i)
+  for(i = 0; i < NUM_STATES; ++i)
   {
-    printf("%f\t", state[i]);
+    printf("[%f %f] \t", rset.dims[i].min, rset.dims[i].max);
   }
   printf("\n");
 }
@@ -63,4 +65,14 @@ bool check_state(double* state)
       }
   }
   return true;
+}
+
+double min(double a, double b)
+{
+    return (a < b) ? a : b;
+}
+
+double max(double a, double b)
+{
+    return (a > b) ? a : b;
 }

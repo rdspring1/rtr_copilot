@@ -6,5 +6,8 @@
 #include <stdbool.h>
 
 void face_lift();
-struct Interval min_max_derivatives();
+void constructNeighborhoods(struct Interval* allDerivatives, struct Interval* neighborhoodWidths);
+struct Interval getMinMaxDerivative(int dim, struct HyperRect* box);
+double minCrossReachTime(struct Interval* allDerivatives, struct Interval* neighborhoodWidths);
+void advanceBox(struct Interval* allDerivatives, double reachTime);
 double linear_derivative(int dim, double* state);
