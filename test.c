@@ -8,8 +8,6 @@
 // Objective: Keep angle of inverted pendulum upright 
 int main(int argc, char** argv)
 {
-  assert(argc == 2);
-  const int RNDS = atoi(argv[1]);
   const double RUNTIME = 2000; // 20 ms
   face_lift(RUNTIME); 
   return 0;
