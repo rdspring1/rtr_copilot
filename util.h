@@ -12,7 +12,9 @@ bool check_bound(struct Interval i, double value);
 double bound(struct Interval i, double value);
 void check_input(double* values);
 bool check_state(double* state);
-void print_state(const int rnd);
+void print_state(double* state);
+void print_rset(const int rnd);
 double min(double a, double b);
 double max(double a, double b);
+double absolute(double x);
 #endif // _UTIL_H_

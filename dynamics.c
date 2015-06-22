@@ -5,8 +5,8 @@ struct HyperRect rset =
     {
 	{-0.1, 0.1},
 	{0.65, 0.85},
-	{0, 10},
-	{0, 10}
+	{-1, 1},
+	{-1, 1}
     }
 };
 
@@ -39,7 +39,7 @@ const struct Interval state_constraints[NUM_STATES] =
 {
   {-1.0, 1.0},
   {-1.0, 1.0},
-  {-15.0, 15.0},
+  {-30.0, 30.0},
   {-DBL_MAX, DBL_MAX}
 };
 

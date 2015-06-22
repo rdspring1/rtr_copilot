@@ -34,13 +34,23 @@ double bound(struct Interval i, double value)
   }
 }
 
-void print_state(const int rnd)
+void print_rset(const int rnd)
 {
   printf("Round: %d\t", rnd);
   int i;
   for(i = 0; i < NUM_STATES; ++i)
   {
     printf("[%f %f] \t", rset.dims[i].min, rset.dims[i].max);
+  }
+  printf("\n");
+}
+
+void print_state(double* state)
+{
+  int i;
+  for(i = 0; i < NUM_STATES; ++i)
+  {
+    printf("%f \t", state[i]);
   }
   printf("\n");
 }
@@ -75,4 +85,13 @@ double min(double a, double b)
 double max(double a, double b)
 {
     return (a > b) ? a : b;
+}
+
+double absolute(double x)
+{
+    if(x < 0)
+    {
+	return x *= -1.0;
+    }
+    return x;
 }

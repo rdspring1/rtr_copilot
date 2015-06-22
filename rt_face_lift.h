@@ -2,9 +2,10 @@
 
 #include <assert.h>
 #include <math.h>
-#include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
 
+bool check_rset();
 void face_lift();
 void constructNeighborhoods(struct Interval* allDerivatives, struct Interval* neighborhoodWidths);
 struct Interval getMinMaxDerivative(int dim, struct HyperRect* box);

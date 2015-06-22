@@ -5,6 +5,9 @@ void face_lift(double reachTimeRemaining)
     int rnds = 0;
     while(reachTimeRemaining > 0)
     {
+	print_rset(++rnds);
+	assert(check_rset());
+
 	// min / max derivative for each neighborhood to determine minimum reach-time
 	struct Interval allDerivatives[NUM_STATES];
 	struct Interval neighborhoodWidths[NUM_STATES];
@@ -15,11 +18,37 @@ void face_lift(double reachTimeRemaining)
         double advanceReachTime = min(crossReachTime, reachTimeRemaining);
         advanceBox(allDerivatives, advanceReachTime);
 	
-        reachTimeRemaining = reachTimeRemaining - advanceReachTime;
-    	print_state(++rnds);
+        reachTimeRemaining -= advanceReachTime;
+	reachTimeStep /= 2.0;
     }
 }
 
+bool check_rset()
+{
+    int maxPts = floor(pow(2, NUM_STATES));
+    int pt;
+    for(pt = 0; pt < maxPts; ++pt)
+    {
+	double HyperPoint[NUM_STATES];
+	int mask = 0x1;
+	// Map integer pt to corresponding HyperPoint
+	int d;
+	for(d = 0; d < NUM_STATES; ++d)
+	{
+	    bool max = (pt & mask);
+	    mask <<= 1;
+	    HyperPoint[d] = (max) ? rset.dims[d].max : rset.dims[d].min;
+	}
+
+	if(!check_state(HyperPoint))
+	{
+	    return false;
+	}
+    }
+        return true;
+}
+
+// TODO Rewrite function to construct neighborhoods properly
 // TODO Step 3 - check inward facing neighborhood for outward facing derivative
 // TODO Step 3 - check if a derivative is double the previous derivative along a neighborhood face
 void constructNeighborhoods(struct Interval* allDerivatives, struct Interval* neighborhoodWidths)
@@ -45,7 +74,7 @@ void constructNeighborhoods(struct Interval* allDerivatives, struct Interval* ne
 
 	    struct Interval faceInterval = getMinMaxDerivative(d, &neighborhood);
 	    double faceDerivative = (!max) ? faceInterval.min : faceInterval.max;
-	    double neighborhoodWidth = abs(faceDerivative * reachTimeStep);
+	    double neighborhoodWidth = absolute(faceDerivative * reachTimeStep);
 
 	    if(faceDerivative > 0)
 	    {
@@ -83,9 +112,9 @@ void constructNeighborhoods(struct Interval* allDerivatives, struct Interval* ne
 
 struct Interval getMinMaxDerivative(int dim, struct HyperRect* box)
 {
-    // TODO iterate over 2^N points of HyperRectangle
-    // TODO determine derivative for every HyperPoint
-    // TODO return the min and max derivative for the HyperRectangle
+    // Iterate over 2^N points of HyperRectangle
+    // Determine derivative for every HyperPoint
+    // Return the min and max derivative for the HyperRectangle
     struct Interval rv;
     rv.min = DBL_MAX;
     rv.max = -DBL_MAX;
@@ -95,7 +124,6 @@ struct Interval getMinMaxDerivative(int dim, struct HyperRect* box)
     for(pt = 0; pt < maxPts; ++pt)
     {
 	double HyperPoint[NUM_STATES];
-	
 	int mask = 0x1;
 	// Map integer pt to corresponding HyperPoint
 	int d;
@@ -105,7 +133,6 @@ struct Interval getMinMaxDerivative(int dim, struct HyperRect* box)
 	    mask <<= 1;
 	    HyperPoint[d] = (max) ? box->dims[d].max : box->dims[d].min;
 	}
-
 	double dv = linear_derivative(dim, HyperPoint);
 	rv.min = min(rv.min, dv);
 	rv.max = max(rv.max, dv);
@@ -114,23 +141,49 @@ struct Interval getMinMaxDerivative(int dim, struct HyperRect* box)
     return rv;
 }
 
+double linear_derivative(int dim, double* state)
+{
+  // return value
+  double rv = 0;
+
+  // AX
+  int i;
+  for(i = 0; i < NUM_STATES; ++i)
+  {
+    rv += A[dim][i] * state[i];
+  }
+
+  // input saturation
+  // u = KX
+  double u[NUM_INPUTS] = {0};
+  generate_input(state, u);
+  check_input(u);
+
+  // Bu
+  for(i = 0; i < NUM_INPUTS; ++i)
+  {
+    rv += B[dim][i] * u[i];
+  }
+  return rv;
+}
+
 double minCrossReachTime(struct Interval* allDerivatives, struct Interval* neighborhoodWidths)
 {
     double minTime = DBL_MAX;
     int d;
     for(d = 0; d < NUM_STATES; ++d)
     {
-	double absMin = abs(allDerivatives[d].min);
+	double absMin = absolute(allDerivatives[d].min);
 	if(absMin > EPSILON)
         {
 	    double minTimeDim = neighborhoodWidths[d].min / absMin; 
 	    minTime = min(minTime, minTimeDim);
 	}
 
-	double absMax = abs(allDerivatives[d].max);
+	double absMax = absolute(allDerivatives[d].max);
 	if(absMax > EPSILON)
 	{
-	    double maxTimeDim = neighborhoodWidths[d].max / abs(allDerivatives[d].max);
+	    double maxTimeDim = neighborhoodWidths[d].max / absMax;
 	    minTime = min(minTime, maxTimeDim);
 	}
     }
@@ -148,30 +201,4 @@ void advanceBox(struct Interval* allDerivatives, double reachTime)
 	    rset.dims[d].max = rset.dims[d].max + reachTime * allDerivatives[d].max;
 	}
     }
-}
-    
-double linear_derivative(int dim, double* state)
-{
-  // return value
-  double rv = 0;
-
-  // AX
-  int i;
-  for(i = 0; i < NUM_STATES; ++i)
-  {
-    rv += A[dim][i] * state[i];
-  }
-
-  // input saturation
-  // u = KX 
-  double u[NUM_INPUTS] = {0};
-  generate_input(state, u);
-  check_input(u);
-
-  // Bu
-  for(i = 0; i < NUM_INPUTS; ++i)
-  {
-    rv += B[dim][i] * u[i];
-  }
-  return rv;
 }

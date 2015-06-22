@@ -8,7 +8,7 @@
 // Objective: Keep angle of inverted pendulum upright 
 int main(int argc, char** argv)
 {
-  const double RUNTIME = 2000; // 20 ms
+  const double RUNTIME = 20; // 20 ms
   face_lift(RUNTIME); 
   return 0;
 }
