@@ -4,13 +4,15 @@ struct HyperRect rset =
 {
     {
 	{-0.1, 0.1},
-	{0.65, 0.85},
-	{-1, 1},
-	{-1, 1}
+	{0.85, 0.85},
+	{0, 0},
+	{0, 0}
     }
 };
 
-double reachTimeStep = 0.73;
+double reachTimeStep = 0.0075; // 100 steps
+//double reachTimeStep = 0.0025; // 300 steps
+//double reachTimeStep = 0.0006; // 1250 steps
 
 // x' = Ax + Bu
 const double A[NUM_STATES][NUM_STATES] =
