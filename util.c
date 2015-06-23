@@ -36,11 +36,10 @@ double bound(struct Interval i, double value)
 
 void print_rset(const int rnd)
 {
-  printf("Round: %d\t", rnd);
   int i;
   for(i = 0; i < NUM_STATES; ++i)
   {
-    printf("[%f %f] \t", rset.dims[i].min, rset.dims[i].max);
+    printf("[%f %f]\t", rset.dims[i].min, rset.dims[i].max);
   }
   printf("\n");
 }

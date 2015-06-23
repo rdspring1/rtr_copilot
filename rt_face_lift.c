@@ -5,7 +5,7 @@ void face_lift(double reachTimeRemaining)
     int rnds = 0;
     while(reachTimeRemaining > 0)
     {
-	print_rset(++rnds);
+	print_rset();
 	assert(check_rset());
 
 	// min / max derivative for each neighborhood to determine minimum reach-time
@@ -23,6 +23,7 @@ void face_lift(double reachTimeRemaining)
 	reachTimeRemaining -= advanceReachTime;
 	//printf("remaining time: %f\n", reachTimeRemaining);
     }
+    //printf("Round: %d\t", rnds);
 }
 
 bool check_rset()
