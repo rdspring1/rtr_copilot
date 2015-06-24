@@ -3,16 +3,16 @@
 struct HyperRect rset =
 {
     {
-	{-0.1, 0.1},
+	{-0.001, 0.001},
 	{0.85, 0.85},
 	{0, 0},
 	{0, 0}
     }
 };
 
-double reachTimeStep = 0.0075; // 100 steps
+//double reachTimeStep = 0.0075; // 100 steps
 //double reachTimeStep = 0.0025; // 300 steps
-//double reachTimeStep = 0.0006; // 1250 steps
+double reachTimeStep = 0.0006; // 1250 steps
 
 // x' = Ax + Bu
 const double A[NUM_STATES][NUM_STATES] =
@@ -34,6 +34,10 @@ const double B[NUM_STATES][NUM_INPUTS] =
 const double K[NUM_INPUTS][NUM_STATES] =
 {
   {0.4072, 7.2373, 18.6269, 3.6725}
+  //{7.6, 13.54, 42.85, 8.25}
+  //{3.16, 19.85, 69.92, 14.38}
+  //{10.0, 27.72, 103.36, 23.04}
+  //{0,0,0,0}
 };
 
 // state contraints
