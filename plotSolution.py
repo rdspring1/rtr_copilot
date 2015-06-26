@@ -20,43 +20,42 @@ def round_scale(value, axis_range):
     most_sig = int(math.floor(math.log10(abs(value))))
     return round(value, -most_sig)
 
-def plot(data, xaxis, yaxis):
-    fig = plt.figure()
-    ax = fig.gca()
-    axis = [sys.float_info.max, sys.float_info.min, sys.float_info.max, sys.float_info.min]
-
-    # Plotting the HyperRectangle points
+def plot_projection(data, xaxis, yaxis):
+    newdata = []
     for hyperRect in data:
         for lineSeg in lineSegs:
             x = []
             y = []
             for pt in lineSeg:
-		xval = hyperRect[xaxis][pt[0]]
-		yval = hyperRect[yaxis][pt[1]]
-                axis[0] = min(axis[0], xval)
-		axis[1] = max(axis[1], xval)
-		axis[2] = min(axis[2], yval)
-		axis[3] = max(axis[3], yval)
+                xval = hyperRect[xaxis][pt[0]]
+                yval = hyperRect[yaxis][pt[1]]
                 x.append(xval)
                 y.append(yval)
-            ax.plot(x, y, 'k')
+            newdata.append([x,y])
+    return newdata
 
-    # expand axis to fit the entire plot
-    border = 0.25
-    rangeX = abs(axis[1] - axis[0])
-    rangeY = abs(axis[3] - axis[2])
-    axis[0] = axis[0] - rangeX * border
-    axis[1] = axis[1] + rangeX * border
-    axis[2] = axis[2] - rangeY * border
-    axis[3] = axis[3] + rangeY * border
+def plot_vector_field(data):
+    newdata = []
+    for line in data:
+        x = []
+        y = []
+        for pt in line:
+            x.append(pt[0])
+            y.append(pt[1])
+        newdata.append([x,y])
+    return newdata
 
-    # round axis to nice values
-    #axis[0] = round_scale(axis[0], rangeX)
-    #axis[1] = round_scale(axis[1], rangeX)
-    #axis[2] = round_scale(axis[2], rangeY)
-    #axis[3] = round_scale(axis[3], rangeY)
+def plot(data, endpoints = False, color_scheme = 'k'):
+    fig = plt.figure()
+    ax = fig.gca()
 
-    plt.axis(axis)
+    # Plot data
+    for line in data:
+        ax.plot(line[0], line[1], color_scheme)
+	if endpoints:
+            ax.plot(line[0][1], line[1][1], 'ro')
+
+    plt.axis('equal')
     plt.show()
 
 # Read the data from the file
@@ -67,17 +66,24 @@ def readPath(filename):
         print "Empty File"
         sys.exit(1)
 
-    data = [[[float(x) for x in interval[1:-1].split(' ')] for interval in line.strip().split('\t')] for line in lines]
-    return data
+    return [[[float(x) for x in interval[1:-1].split(' ')] for interval in line.strip().split('\t')] for line in lines]
 
 if __name__ == '__main__':
-    if len(sys.argv) > 2:
-	xaxis = int(sys.argv[1])
-	yaxis = int(sys.argv[2])
+    if len(sys.argv) > 1:
+        plotType = sys.argv[1]
+    else:
+        plotType = "Projection"
+
+    if len(sys.argv) > 3:
+	xaxis = int(sys.argv[2])
+	yaxis = int(sys.argv[3])
     else:
 	xaxis = 0
 	yaxis = 1
 
     filename = 'data.txt'
     data = readPath(filename)
-    plot(data, xaxis, yaxis)
+    if plotType == "Projection":
+        plot(plot_projection(data, xaxis, yaxis))
+    elif plotType == "VectorField":
+	plot(plot_vector_field(data), True)
