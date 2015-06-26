@@ -1,7 +1,7 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
-#include "dynamics.h"
+#include "params.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -9,8 +9,6 @@
 extern const double EPSILON;
 
 bool check_bound(struct Interval i, double value);
-double bound(struct Interval i, double value);
-void check_input(double* values);
 bool check_state(double* state);
 void print_state(double* state);
 void print_rset();

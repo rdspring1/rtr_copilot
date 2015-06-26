@@ -23,8 +23,8 @@ void build_vector_field(const int xaxis, const int yaxis)
 	    hyperPoint[yaxis] = STATE_BOUNDS[yaxis].min + j * ystep;
 	    printf("[%f %f]\t", hyperPoint[xaxis], hyperPoint[yaxis]);
 
-	    double xdiv = linear_derivative(xaxis, hyperPoint);
-	    double ydiv = linear_derivative(yaxis, hyperPoint);
+	    double xdiv = derivative(xaxis, hyperPoint);
+	    double ydiv = derivative(yaxis, hyperPoint);
 
 	    hyperPoint[xaxis] += STEP * xdiv;
 	    hyperPoint[yaxis] += STEP * ydiv;

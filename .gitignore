@@ -1,6 +1,6 @@
 *.*~
 *.o
 *.txt
+build
+.cmake
 .DS_Store
-rt_reachability
-vector_field

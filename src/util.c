@@ -18,22 +18,6 @@ bool check_bound(struct Interval i, double value)
   }
 }
 
-double bound(struct Interval i, double value)
-{
-  if(value > i.max)
-  {
-    return i.max;
-  }
-  else if(value < i.min)
-  {
-      return i.min;
-  }
-  else
-  {
-      return value;
-  }
-}
-
 void print_rset(const int rnd)
 {
   int i;
@@ -52,15 +36,6 @@ void print_state(double* state)
     printf("%f \t", state[i]);
   }
   printf("\n");
-}
-
-void check_input(double* values)
-{
-  int i;
-  for(i = 0; i < NUM_INPUTS; ++i)
-  {
-    values[i] = bound(input_constraints[i], values[i]);
-  }
 }
 
 bool check_state(double* state)

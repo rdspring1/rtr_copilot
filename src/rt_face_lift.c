@@ -219,37 +219,13 @@ struct Interval getMinMaxDerivative(int dim, struct HyperRect* box)
 	    mask <<= 1;
 	    HyperPoint[d] = (max) ? box->dims[d].max : box->dims[d].min;
 	}
-	double dv = linear_derivative(dim, HyperPoint);
+	double dv = derivative(dim, HyperPoint);
 	rv.min = min(rv.min, dv);
 	rv.max = max(rv.max, dv);
     }
+
+    // TODO Check inflection points of the dynamical system
     return rv;
-}
-
-double linear_derivative(int dim, double* state)
-{
-  // return value
-  double rv = 0;
-
-  // AX
-  int i;
-  for(i = 0; i < NUM_STATES; ++i)
-  {
-    rv += A[dim][i] * state[i];
-  }
-
-  // input saturation
-  // u = KX
-  double u[NUM_INPUTS] = {0};
-  generate_input(state, u);
-  check_input(u);
-
-  // Bu
-  for(i = 0; i < NUM_INPUTS; ++i)
-  {
-    rv += B[dim][i] * u[i];
-  }
-  return rv;
 }
 
 double minCrossReachTime(struct Interval* allDerivatives, struct Interval* neighborhoodWidths)
@@ -260,7 +236,7 @@ double minCrossReachTime(struct Interval* allDerivatives, struct Interval* neigh
 	double absMin = absolute(allDerivatives[d].min);
 	if(absMin > EPSILON)
         {
-	    double minTimeDim = neighborhoodWidths[d].min / absMin; 
+	    double minTimeDim = neighborhoodWidths[d].min / absMin;
 	    minTime = min(minTime, minTimeDim);
 	    //printf("width: %f div: %f min: %f\n", neighborhoodWidths[d].min, absMin, minTimeDim);
 	}
