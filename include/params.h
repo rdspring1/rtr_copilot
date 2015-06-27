@@ -8,7 +8,7 @@
 
 struct HyperRect
 {
-    struct Interval dims[NUM_STATES];
+	struct Interval dims[NUM_STATES];
 };
 
 extern struct HyperRect rset;

@@ -3,8 +3,8 @@
 
 struct Interval
 {
-  double min;
-  double max;
+	double min;
+	double max;
 };
 
 #endif // _INTERVAL_H_

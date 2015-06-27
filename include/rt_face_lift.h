@@ -1,3 +1,6 @@
+#ifndef RT_FACE_LIFT_H
+#define RT_FACE_LIFT_H
+
 #include "util.h"
 
 #include <assert.h>
@@ -12,3 +15,4 @@ bool resample_derivative(bool* reconstruct, int max, double prevDerivative, doub
 struct Interval getMinMaxDerivative(int dim, struct HyperRect* box);
 double minCrossReachTime(struct Interval* allDerivatives, struct Interval* neighborhoodWidths);
 void advanceBox(struct Interval* allDerivatives, double reachTime);
+#endif // RT_FACE_LIFT_H
