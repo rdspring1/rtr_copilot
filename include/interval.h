@@ -10,4 +10,5 @@ struct Interval
 };
 
 bool contains(struct Interval* intv, double value);
+double avg(struct Interval* intv);
 #endif // _INTERVAL_H_

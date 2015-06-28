@@ -16,4 +16,5 @@ double min(double a, double b);
 double max(double a, double b);
 double absolute(double x);
 void updateInterval(struct Interval* rv, double value);
+void compressRset(const double DELTA);
 #endif // _UTIL_H_

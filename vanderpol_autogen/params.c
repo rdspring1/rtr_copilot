@@ -10,8 +10,8 @@ struct HyperRect rset =
 };
 
 //double reachTimeStep = 0.0075; // 100 steps
-//double reachTimeStep = 0.0025; // 300 steps
-double reachTimeStep = 0.0006; // 1250 steps
+double reachTimeStep = 0.0025; // 300 steps
+//double reachTimeStep = 0.0006; // 1250 steps
 
 // state contraints
 const struct Interval state_constraints[NUM_STATES] =
