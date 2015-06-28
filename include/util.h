@@ -15,4 +15,5 @@ void print_rset();
 double min(double a, double b);
 double max(double a, double b);
 double absolute(double x);
+void updateInterval(struct Interval* rv, double value);
 #endif // _UTIL_H_

@@ -28,3 +28,8 @@ double derivative(int dim, double* state)
 {
 	return linear_derivative(dim, state);
 }
+
+void updateInflectionPoints(struct Interval* rv, int dim, struct HyperRect* box)
+{
+	return;
+}

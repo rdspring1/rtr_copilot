@@ -5,8 +5,8 @@
 
 const struct Interval STATE_BOUNDS[NUM_STATES] =
 {
-	{-1.25, 1.25},
-	{-1.2, 1.2},
+	{0, 1.25},
+	{0, 1.2},
 	{-20, 20},
 	{-30, 30}
 };

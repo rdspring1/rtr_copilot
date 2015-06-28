@@ -220,11 +220,11 @@ struct Interval getMinMaxDerivative(int dim, struct HyperRect* box)
 			HyperPoint[d] = (max) ? box->dims[d].max : box->dims[d].min;
 		}
 		double dv = derivative(dim, HyperPoint);
-		rv.min = min(rv.min, dv);
-		rv.max = max(rv.max, dv);
+		updateInterval(&rv, dv);
 	}
 
-	// TODO Check inflection points of the dynamical system
+	// Check inflection points of the dynamical system
+	updateInflectionPoints(&rv, dim, box);
 	return rv;
 }
 

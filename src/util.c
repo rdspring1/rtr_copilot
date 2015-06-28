@@ -69,3 +69,9 @@ double absolute(double x)
 	}
 	return x;
 }
+
+void updateInterval(struct Interval* rv, double value)
+{
+	rv->min = min(rv->min, value);
+	rv->max = max(rv->max, value);
+}
