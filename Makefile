@@ -1,16 +1,27 @@
-all: compile
+all: ctags compile
 
 compile: clean
 	mkdir build
 	cd build && cmake .. && $(MAKE)
 
-projection: compile
-	./build/rtr_copilot > data.txt
+pendulum: compile
+	./build/pendulum > data.txt
 	./plotSolution.py
 
-visual: compile
-	./build/vector_field > data.txt
+vanderpol: compile
+	./build/vanderpol > data.txt
+	./plotSolution.py
+
+visual_pendulum: compile
+	./build/pendulum_vector_field > data.txt
 	./plotSolution.py "VectorField"
+
+visual_vanderpol: compile
+	./build/vanderpol_vector_field > data.txt
+	./plotSolution.py "VectorField"
+
+ctags:
+	ctags -R -f ./.git/tags .
 
 clean:
 	rm -rf build/

@@ -8,7 +8,9 @@
 // Objective: Keep angle of inverted pendulum upright 
 int main(int argc, char** argv)
 {
-	const double REACH_TIME = 0.75;
-	face_lift(REACH_TIME);
+	const double VANDERPOL_REACH_TIME = 10.0;
+	const double PENDULUM_REACH_TIME = 0.75;
+	//face_lift(PENDULUM_REACH_TIME);
+	face_lift(VANDERPOL_REACH_TIME);
 	return 0;
 }

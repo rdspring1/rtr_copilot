@@ -4,13 +4,30 @@ project (rtr_copilot)
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/build)
 set (CMAKE_C_FLAGS			"-std=c99 -pedantic -g -O0")
 
-include_directories("${PROJECT_SOURCE_DIR}/include")
+include_directories ("${PROJECT_SOURCE_DIR}/include")
 include_directories (${CMAKE_SOURCE_DIR})
 
-file(GLOB LINEAR_PENDULUM_AUTOGEN_SRC_FILES "linear_pendulum_autogen/*.c")
+file(GLOB PENDULUM_AUTOGEN_SRC_FILES "pendulum_autogen/*.c")
+file(GLOB VANDERPOL_AUTOGEN_SRC_FILES "vanderpol_autogen/*.c")
+file(GLOB LINEAR_SRC_FILES "linear_system/*.c")
 file(GLOB PROJECT_SRC_FILES "src/*.c")
-add_executable(rtr_copilot ${LINEAR_PENDULUM_AUTOGEN_SRC_FILES} ${PROJECT_SRC_FILES} rt_reachability.c)
-add_executable(vector_field ${LINEAR_PENDULUM_AUTOGEN_SRC_FILES} ${PROJECT_SRC_FILES} vector_field.c)
 
-target_include_directories(rtr_copilot PUBLIC "${PROJECT_SOURCE_DIR}/linear_pendulum_autogen/include")
-target_include_directories(vector_field PUBLIC "${PROJECT_SOURCE_DIR}/linear_pendulum_autogen/include")
+add_executable(pendulum ${PENDULUM_AUTOGEN_SRC_FILES} ${LINEAR_SRC_FILES} ${PROJECT_SRC_FILES} rt_reachability.c)
+add_executable(vanderpol ${VANDERPOL_AUTOGEN_SRC_FILES} ${PROJECT_SRC_FILES} rt_reachability.c)
+
+add_executable(pendulum_vector_field ${PENDULUM_AUTOGEN_SRC_FILES} ${LINEAR_SRC_FILES} ${PROJECT_SRC_FILES} vector_field.c)
+add_executable(vanderpol_vector_field ${VANDERPOL_AUTOGEN_SRC_FILES} ${PROJECT_SRC_FILES} vector_field.c)
+
+target_include_directories(pendulum PUBLIC "${PROJECT_SOURCE_DIR}/linear_system/include")
+target_include_directories(pendulum PUBLIC "${PROJECT_SOURCE_DIR}/pendulum_autogen/include")
+target_link_libraries(pendulum m)
+
+target_include_directories(vanderpol PUBLIC "${PROJECT_SOURCE_DIR}/vanderpol_autogen/include")
+target_link_libraries(vanderpol m)
+
+target_include_directories(pendulum_vector_field PUBLIC "${PROJECT_SOURCE_DIR}/linear_system/include")
+target_include_directories(pendulum_vector_field PUBLIC "${PROJECT_SOURCE_DIR}/pendulum_autogen/include")
+target_link_libraries(pendulum_vector_field m)
+
+target_include_directories(vanderpol_vector_field PUBLIC "${PROJECT_SOURCE_DIR}/vanderpol_autogen/include")
+target_link_libraries(vanderpol_vector_field m)

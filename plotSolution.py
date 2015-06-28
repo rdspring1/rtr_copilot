@@ -86,4 +86,4 @@ if __name__ == '__main__':
     if plotType == "Projection":
         plot(plot_projection(data, xaxis, yaxis))
     elif plotType == "VectorField":
-	plot(plot_vector_field(data), True)
+	plot(plot_vector_field(data), False)
