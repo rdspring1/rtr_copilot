@@ -1,4 +1,4 @@
-all: ctags compile
+all: compile
 
 compile: clean
 	mkdir build

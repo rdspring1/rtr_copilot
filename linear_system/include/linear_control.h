@@ -5,8 +5,8 @@
 
 #include <stdbool.h>
 
-double bound(struct Interval i, double value);
-void check_input(double* values);
+static double bound(struct Interval i, double value);
+static void check_input(double* values);
 void generate_input(double* state, double* u);
 
 #endif // INPUT_H

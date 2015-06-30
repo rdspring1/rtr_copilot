@@ -4,18 +4,7 @@ const double EPSILON = 0.00001;
 
 bool check_bound(struct Interval i, double value)
 {
-	if(value > i.max)
-	{
-		return false;
-	}
-	else if(value < i.min)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
+	return ((value > i.max) && (value < i.min)) ? false : true;
 }
 
 void print_rset(const int rnd)
@@ -63,11 +52,7 @@ double max(double a, double b)
 
 double absolute(double x)
 {
-	if(x < 0)
-	{
-		return x *= -1.0;
-	}
-	return x;
+	return (x < 0) ? (x * -1.0) : x;
 }
 
 void updateInterval(struct Interval* rv, double value)
