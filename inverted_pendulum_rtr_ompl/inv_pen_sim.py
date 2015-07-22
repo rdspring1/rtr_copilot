@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.integrate as integrate
 import matplotlib.animation as animation
+import math
 
 xaxis = 5
 
@@ -17,9 +18,9 @@ class DoublePendulum:
     def __init__(self,
                  init_state = [0.0, 0.0, 0.0, 0.0],
                  l=0.3,  # length of pendulum in m
-                 m=0.2,  # mass of pendulum in kg
-		 L=0.5,  # length of the cart in m
-                 M=0.8,  # mass of the cart in kg
+                 m=0.25,  # mass of pendulum in kg
+		 L=1.0,  # length of the cart in m
+                 M=0.5,  # mass of the cart in kg
 		 friction = 7.68, # friction coefficient in N / m / sec
                  G=9.81, # acceleration due to gravity, in m/s^2
                  origin=(0, 0)): 
@@ -28,16 +29,11 @@ class DoublePendulum:
         self.origin = origin
         self.time_elapsed = 0
         self.state = self.init_state
-	self.KP = -20.0
-	self.KD = -5.0
+	self.ground = False
+	self.KP = 25.0
+	self.KD = 5.0
 
-    def control_update(self):
-        """compute the control update for the given state"""
-        (l, m, L, M, friction, G) = self.params
-	u = self.KP * self.state[1] + self.KD * self.state[3]
-	B = [0, 0, 1.0/M, 1/(M*l)]
-	return np.dot(B,u)
-    
+
     def position(self):
         """compute the current x,y positions of the pendulum arms"""
         (l, m, L, M, friction, G) = self.params
@@ -50,31 +46,47 @@ class DoublePendulum:
                        2*l * cos(self.state[1])])
         return (x, y)
 
+    def control_update(self):
+        """compute the control update for the given state"""
+        (l, m, L, M, friction, G) = self.params
+	u = self.KP * self.state[1] + self.KD * self.state[3]
+	return u
+
     def dstate_dt(self, state, t):
         """compute the derivative of the given state"""
         (l, m, L, M, friction, G) = self.params
+        u = self.control_update()
 
         dt = np.zeros_like(state)
         dt[0] = state[2]
         dt[1] = state[3]
+		
+	dt2_num = u + m * l * math.sin(state[1]) * math.pow(state[3],2.0) - m * G * math.cos(state[1]) * math.sin(state[1])
+	dt2_den = M + m - m * math.pow(math.cos(state[1]), 2.0)
+	dt[2] = dt2_num / dt2_den
 
-	A3 = [0, (m*G)/M, -friction/M, 0]
-	dt[2] = np.dot(A3, state)
+	dt3_num = u * math.cos(state[1]) - (M+m) * G * math.sin(state[1]) + m * l * (math.cos(state[1]) * math.sin(state[1])) * state[3]
+	dt3_den = m * l * math.pow(math.cos(state[1]), 2.0) - (M+m) * l
+	dt[3] = dt3_num / dt3_den
 
-	A4 = [0, ((M+m)/(M*l))*G, friction/(M*l), 0]
-	dt[3] = np.dot(A4, state)
-        return dt + self.control_update()
+        return dt
+
+    def bound_control(self, control):
+	global xaxis
+	# cart position and velocity
+	if abs(self.state[0]) > xaxis:
+            control[2] = 0
+	    control[3] = 0
+	return control
 
     def bound_state(self):
 	global xaxis
-	if self.state[1] > (np.pi / 2.0):
-	    self.state[1] = (np.pi / 2.0)
-	elif self.state[1] < (-np.pi / 2.0):
-	    self.state[1] = (-np.pi / 2.0)
-	
+	# cart position and velocity
 	if self.state[0] > xaxis:
+            self.state[2] = 0
 	    self.state[0] = xaxis
 	elif self.state[0] < -xaxis:
+            self.state[2] = 0
 	    self.state[0] = -xaxis
 
     def step(self, dt):
@@ -85,14 +97,14 @@ class DoublePendulum:
 
 #------------------------------------------------------------
 # set up initial state and global variables
-pendulum = DoublePendulum([0.0, np.radians(5.0), 0.0, 0.0])
-dt = 1./200 
+pendulum = DoublePendulum([0.0, np.radians(20.0), 0.0, 0.0])
+dt = 1./100 
 
 #------------------------------------------------------------
 # set up figure and animation
 fig = plt.figure()
 ax = fig.add_subplot(111, aspect='equal', autoscale_on=False,
-                     xlim=(-1.5 * xaxis, 1.5 * xaxis), ylim=(-2, 2))
+                     xlim=(-1.5 * xaxis, 1.5 * xaxis), ylim=(-4, 4))
 ax.grid()
 
 line, = ax.plot([], [], 'o-', lw=2)
