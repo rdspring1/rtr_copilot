@@ -30,8 +30,10 @@ class DoublePendulum:
         self.time_elapsed = 0
         self.state = self.init_state
 	self.ground = False
-	self.KP = 25.0
-	self.KD = 5.0
+	#self.KP = 25.0
+	#self.KD = 5.0
+	self.KP = 0.0
+	self.KD = 0.0
 
 
     def position(self):
@@ -93,6 +95,7 @@ class DoublePendulum:
         """execute one time step of length dt and update state"""
         self.state = integrate.odeint(self.dstate_dt, self.state, [0, dt])[1]
 	self.bound_state()
+	print self.state
         self.time_elapsed += dt
 
 #------------------------------------------------------------
