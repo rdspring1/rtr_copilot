@@ -33,8 +33,8 @@ void ompl::control::PID::clear(void)
 
 void ompl::control::PID::control_action(oc::Control*& control, ob::State*& state)
 {
-	static const double KP = 0.0;
-	static const double KD = 0.0;
+	static const double KP = 25.0;
+	static const double KD = 5.0;
 	double* u = control->as<oc::RealVectorControlSpace::ControlType>()->values;
 
 	const ompl::base::CompoundState* cstate = state->as<ompl::base::CompoundState>();

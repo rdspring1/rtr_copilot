@@ -8,7 +8,7 @@ import fileinput
 
 xaxis = 5
 L = 0.5
-l = 0.3
+l = 0.5
 
 #------------------------------------------------------------
 data_points = [[float(x) for x in line.split(' ')] for line in fileinput.input()]
@@ -43,7 +43,7 @@ t1 = time()
 interval = len(data_points) * (t1 - t0)
 
 # choose the interval based on dt and the time to animate one step
-ani = animation.FuncAnimation(fig, animate, frames=300,
+ani = animation.FuncAnimation(fig, animate, frames=len(data_points),
                               interval=interval, blit=False, init_func=init)
 
 # save the animation as an mp4.  This requires ffmpeg or mencoder to be

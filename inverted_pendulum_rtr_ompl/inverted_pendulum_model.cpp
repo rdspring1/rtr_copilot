@@ -20,7 +20,7 @@ const double m = 0.25;
 const double M = 0.5;
 
 // Pendulum Limits
-const double xaxis_limit = 7.5;
+const double xaxis_limit = 4.5;
 
 typedef std::pair<double, double> Point2D;
 typedef std::vector<Point2D> Rect;
@@ -36,7 +36,6 @@ void PendulumODE (const oc::ODESolver::StateType& q, const oc::Control* control,
 	const double theta = q[1];
 	const double vel = q[2];
 	const double omega = q[3];
-	//	std::cout << pos << " " << theta << " " << vel << " " << omega << std::endl;
 
 	// Zero out qdot
 	qdot.resize (q.size(), 0);
@@ -51,6 +50,26 @@ void PendulumODE (const oc::ODESolver::StateType& q, const oc::Control* control,
 	double dt3_num = *u * cos(theta) - (M+m) * G * sin(theta) + m * l * (cos(theta) * sin(theta)) * omega;
 	double dt3_den = m * l * pow(cos(theta), 2.0) - (M+m) * l;
 	qdot[3] = dt3_num / dt3_den;
+}
+
+// This is a callback method invoked after numerical integration.
+void PendulumPostIntegration (const ob::State* /*state*/, const oc::Control* /*control*/, const double /*duration*/, ob::State *result)
+{
+    const ompl::base::CompoundState* cstate = result->as<ompl::base::CompoundState>();
+
+    const ob::RealVectorStateSpace::StateType *pos = cstate->as<ob::RealVectorStateSpace::StateType>(0);
+    const ob::RealVectorStateSpace::StateType *vel = cstate->as<ob::RealVectorStateSpace::StateType>(2);
+
+    if(pos->values[0] < -xaxis_limit)
+    {
+	    pos->values[0]  = -xaxis_limit;
+	    vel->values[0] = 0.0;
+    }
+    else if(pos->values[0] > xaxis_limit)
+    {
+	    pos->values[0] = xaxis_limit;
+	    vel->values[0] = 0.0;
+    }
 }
 
 bool isStateValidPen(const ob::State *state)
@@ -97,7 +116,7 @@ void planWithSimpleSetupPen(std::string title = "Default")
 	// Use the ODESolver to propagate the system.  Call KinematicCarPostIntegration
 	// when integration has finished to normalize the orientation values.
 	oc::ODESolverPtr odeSolver(new oc::ODEBasicSolver<> (ss.getSpaceInformation(), &PendulumODE));
-    	ss.setStatePropagator(oc::ODESolver::getStatePropagator(odeSolver));
+	ss.setStatePropagator(oc::ODESolver::getStatePropagator(odeSolver, PendulumPostIntegration));
 
 	/// create a start state
 	ob::ScopedState<> start(space);
@@ -122,7 +141,7 @@ void planWithSimpleSetupPen(std::string title = "Default")
 	ss.setup();
 
 	/// attempt to solve the problem within one second of planning time
-	ob::PlannerStatus solved = ss.solve(1.0);
+	ob::PlannerStatus solved = ss.solve(0.25);
 
 	if (solved)
 	{
