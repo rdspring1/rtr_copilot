@@ -1,14 +1,6 @@
 #include "params.h"
 #include "derivative_params.h"
 
-struct HyperRect rset =
-{
-	{
-		{1.0, 1.0},
-		{0.20, 0.21},
-	}
-};
-
 //double reachTimeStep = 0.0075; // 100 steps
 double reachTimeStep = 0.0025; // 300 steps
 //double reachTimeStep = 0.0006; // 1250 steps

@@ -1,24 +1,24 @@
 #include "rt_face_lift.h"
 
-void face_lift(double reachTimeRemaining)
+void face_lift(struct Monitor * const params, double reachTimeRemaining)
 {
 	int rnds = 0;
 	while(reachTimeRemaining > 0)
 	{
-		print_rset();
-		assert(check_rset());
+		print_rset(params);
+		assert(check_rset(params));
 
 		// min / max derivative for each neighborhood to determine minimum reach-time
 		struct Interval allDerivatives[NUM_STATES];
 		struct Interval neighborhoodWidths[NUM_STATES];
-		constructNeighborhoods(allDerivatives, neighborhoodWidths);
+		constructNeighborhoods(params, allDerivatives, neighborhoodWidths);
 
 		// for each neighborhood, reach-time = neighborhood-width / (min/max) derivative
 		double crossReachTime = minCrossReachTime(allDerivatives, neighborhoodWidths);
 		assert(crossReachTime >= (reachTimeStep / 2.0));
 
 		double advanceReachTime = min(crossReachTime, reachTimeRemaining);
-		advanceBox(allDerivatives, advanceReachTime);
+		advanceBox(params, allDerivatives, advanceReachTime);
 
 		reachTimeRemaining -= advanceReachTime;
 		//printf("remaining time: %f\n", reachTimeRemaining);
@@ -26,7 +26,7 @@ void face_lift(double reachTimeRemaining)
 	//printf("Round: %d\t", rnds);
 }
 
-bool check_rset()
+bool check_rset(struct Monitor * const params)
 {
 	int maxPts = floor(pow(2, NUM_STATES));
 	for(int pt = 0; pt < maxPts; ++pt)
@@ -39,7 +39,7 @@ bool check_rset()
 		{
 			bool max = (pt & mask);
 			mask <<= 1;
-			HyperPoint[d] = (max) ? rset.dims[d].max : rset.dims[d].min;
+			HyperPoint[d] = (max) ? params->rset->dims[d].max : params->rset->dims[d].min;
 		}
 
 		if(!check_state(HyperPoint))
@@ -56,15 +56,14 @@ bool check_rset()
 // Step 3 - Check inward facing neighborhoods for an outward facing derivative
 // Step 3 - Check if a derivative is double the previous derivative along a neighborhood face
 // Step 3 - Repeat Step 2 if the either condition occurs
-void constructNeighborhoods(struct Interval* allDerivatives, struct Interval* neighborhoodWidths)
+void constructNeighborhoods(struct Monitor * const params, struct Interval* allDerivatives, struct Interval* neighborhoodWidths)
 {
 	// Calculate derivative for each flat face
 	for(int d = 0; d < NUM_STATES; ++d)
 	{
 		for(int max = 0; max < 2; ++max)
 		{
-			struct HyperRect neighborhood;
-			neighborhood = rset;
+			struct HyperRect neighborhood = *params->rset;
 
 			// Which face in the dimension are we expanding?
 			if(!max) // min
@@ -103,8 +102,7 @@ void constructNeighborhoods(struct Interval* allDerivatives, struct Interval* ne
 		{
 			for(int max = 0; max < 2; ++max)
 			{
-				struct HyperRect neighborhood;
-				neighborhood = rset;
+				struct HyperRect neighborhood = *params->rset;
 				double width;
 
 				// Which face in the dimension are we expanding?
@@ -253,14 +251,14 @@ double minCrossReachTime(struct Interval* allDerivatives, struct Interval* neigh
 	return minTime;
 }
 
-void advanceBox(struct Interval* allDerivatives, double reachTime)
+void advanceBox(struct Monitor * const params, struct Interval* allDerivatives, double reachTime)
 {
 	if(reachTime < DBL_MAX)
 	{
 		for(int d = 0; d < NUM_STATES; ++d)
 		{
-			rset.dims[d].min += reachTime * allDerivatives[d].min;
-			rset.dims[d].max += reachTime * allDerivatives[d].max;
+			params->rset->dims[d].min += reachTime * allDerivatives[d].min;
+			params->rset->dims[d].max += reachTime * allDerivatives[d].max;
 		}
 	}
 }

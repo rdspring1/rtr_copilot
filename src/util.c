@@ -7,12 +7,12 @@ bool check_bound(struct Interval i, double value)
 	return ((value > i.max) && (value < i.min)) ? false : true;
 }
 
-void print_rset(const int rnd)
+void print_rset(struct Monitor * const params)
 {
 	int i;
 	for(i = 0; i < NUM_STATES; ++i)
 	{
-		printf("[%f %f]\t", rset.dims[i].min, rset.dims[i].max);
+		printf("[%f %f]\t", params->rset->dims[i].min, params->rset->dims[i].max);
 	}
 	printf("\n");
 }
@@ -61,17 +61,17 @@ void updateInterval(struct Interval* rv, double value)
 	rv->max = max(rv->max, value);
 }
 
-void compressRset(const double DELTA)
+void compressRset(struct Monitor * const params, const double DELTA)
 {
-	double avg0 = avg(&rset.dims[0]);
-	//printf("%f %f %f \n", rset.dims[0].min, rset.dims[0].max, avg0);
-	rset.dims[0].min = avg0;
-	rset.dims[0].max = avg0 + DELTA;
+	double avg0 = avg(&params->rset->dims[0]);
+	//printf("%f %f %f \n", params->rset->dims[0].min, params->rset->dims[0].max, avg0);
+	params->rset->dims[0].min = avg0;
+	params->rset->dims[0].max = avg0 + DELTA;
 	for(int d = 1; d < NUM_STATES; ++d)
 	{
-		double average = avg(&rset.dims[d]);
-		//printf("%f %f %f\n", rset.dims[d].min, rset.dims[d].max, average);
-		rset.dims[d].min = average;
-		rset.dims[d].max = average;
+		double average = avg(&params->rset->dims[d]);
+		//printf("%f %f %f\n", params->rset->dims[d].min, params->rset->dims[d].max, average);
+		params->rset->dims[d].min = average;
+		params->rset->dims[d].max = average;
 	}
 }

@@ -1,6 +1,7 @@
 #include "params.h"
 #include "linear.h"
 
+/*
 struct HyperRect rset =
 {
 	{
@@ -10,6 +11,7 @@ struct HyperRect rset =
 		{0, 0}
 	}
 };
+*/
 
 //double reachTimeStep = 0.0075; // 100 steps
 //double reachTimeStep = 0.0025; // 300 steps
