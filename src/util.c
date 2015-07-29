@@ -10,29 +10,29 @@ bool check_bound(struct Interval i, double value)
 void print_rset(struct Monitor * const params)
 {
 	int i;
-	for(i = 0; i < NUM_STATES; ++i)
+	for(i = 0; i < params->NUM_STATES; ++i)
 	{
 		printf("[%f %f]\t", params->rset->dims[i].min, params->rset->dims[i].max);
 	}
 	printf("\n");
 }
 
-void print_state(double* state)
+void print_state(struct Monitor * const params, double* state)
 {
 	int i;
-	for(i = 0; i < NUM_STATES; ++i)
+	for(i = 0; i < params->NUM_STATES; ++i)
 	{
 		printf("%f \t", state[i]);
 	}
 	printf("\n");
 }
 
-bool check_state(double* state)
+bool check_state(struct Monitor * const params, double* state)
 {
 	int i;
-	for(i = 0; i < NUM_STATES; ++i)
+	for(i = 0; i < params->NUM_STATES; ++i)
 	{
-		if(!check_bound(state_constraints[i], state[i]))
+		if(!check_bound(params->state_constraints[i], state[i]))
 		{
 			return false;
 		}
@@ -67,11 +67,20 @@ void compressRset(struct Monitor * const params, const double DELTA)
 	//printf("%f %f %f \n", params->rset->dims[0].min, params->rset->dims[0].max, avg0);
 	params->rset->dims[0].min = avg0;
 	params->rset->dims[0].max = avg0 + DELTA;
-	for(int d = 1; d < NUM_STATES; ++d)
+	for(int d = 1; d < params->NUM_STATES; ++d)
 	{
 		double average = avg(&params->rset->dims[d]);
 		//printf("%f %f %f\n", params->rset->dims[d].min, params->rset->dims[d].max, average);
 		params->rset->dims[d].min = average;
 		params->rset->dims[d].max = average;
+	}
+}
+
+void updateNeighborhood(struct Monitor * const params)
+{
+	for(int i = 0; i < params->NUM_STATES; ++i)
+	{
+		params->neighborhood->dims[i].min = params->rset->dims[i].min;
+		params->neighborhood->dims[i].max = params->rset->dims[i].max;
 	}
 }

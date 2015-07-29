@@ -12,22 +12,20 @@ file(GLOB VANDERPOL_AUTOGEN_SRC_FILES "vanderpol_autogen/*.c")
 file(GLOB LINEAR_SRC_FILES "linear_system/*.c")
 file(GLOB PROJECT_SRC_FILES "src/*.c")
 
-add_executable(pendulum ${PENDULUM_AUTOGEN_SRC_FILES} ${LINEAR_SRC_FILES} ${PROJECT_SRC_FILES} rt_reachability.c)
+#add_executable(pendulum ${PENDULUM_AUTOGEN_SRC_FILES} ${LINEAR_SRC_FILES} ${PROJECT_SRC_FILES} rt_reachability.c)
+#target_include_directories(pendulum PUBLIC "${PROJECT_SOURCE_DIR}/linear_system/include")
+#target_include_directories(pendulum PUBLIC "${PROJECT_SOURCE_DIR}/pendulum_autogen/include")
+#target_link_libraries(pendulum m)
+
 add_executable(vanderpol ${VANDERPOL_AUTOGEN_SRC_FILES} ${PROJECT_SRC_FILES} rt_reachability.c)
-
-add_executable(pendulum_vector_field ${PENDULUM_AUTOGEN_SRC_FILES} ${LINEAR_SRC_FILES} ${PROJECT_SRC_FILES} vector_field.c)
-add_executable(vanderpol_vector_field ${VANDERPOL_AUTOGEN_SRC_FILES} ${PROJECT_SRC_FILES} vector_field.c)
-
-target_include_directories(pendulum PUBLIC "${PROJECT_SOURCE_DIR}/linear_system/include")
-target_include_directories(pendulum PUBLIC "${PROJECT_SOURCE_DIR}/pendulum_autogen/include")
-target_link_libraries(pendulum m)
-
 target_include_directories(vanderpol PUBLIC "${PROJECT_SOURCE_DIR}/vanderpol_autogen/include")
 target_link_libraries(vanderpol m)
 
-target_include_directories(pendulum_vector_field PUBLIC "${PROJECT_SOURCE_DIR}/linear_system/include")
-target_include_directories(pendulum_vector_field PUBLIC "${PROJECT_SOURCE_DIR}/pendulum_autogen/include")
-target_link_libraries(pendulum_vector_field m)
+#add_executable(pendulum_vector_field ${PENDULUM_AUTOGEN_SRC_FILES} ${LINEAR_SRC_FILES} ${PROJECT_SRC_FILES} vector_field.c)
+#target_include_directories(pendulum_vector_field PUBLIC "${PROJECT_SOURCE_DIR}/linear_system/include")
+#target_include_directories(pendulum_vector_field PUBLIC "${PROJECT_SOURCE_DIR}/pendulum_autogen/include")
+#target_link_libraries(pendulum_vector_field m)
 
-target_include_directories(vanderpol_vector_field PUBLIC "${PROJECT_SOURCE_DIR}/vanderpol_autogen/include")
-target_link_libraries(vanderpol_vector_field m)
+#add_executable(vanderpol_vector_field ${VANDERPOL_AUTOGEN_SRC_FILES} ${PROJECT_SRC_FILES} vector_field.c)
+#target_include_directories(vanderpol_vector_field PUBLIC "${PROJECT_SOURCE_DIR}/vanderpol_autogen/include")
+#target_link_libraries(vanderpol_vector_field m)

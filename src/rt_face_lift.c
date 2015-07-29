@@ -9,13 +9,13 @@ void face_lift(struct Monitor * const params, double reachTimeRemaining)
 		assert(check_rset(params));
 
 		// min / max derivative for each neighborhood to determine minimum reach-time
-		struct Interval allDerivatives[NUM_STATES];
-		struct Interval neighborhoodWidths[NUM_STATES];
+		struct Interval allDerivatives[params->NUM_STATES];
+		struct Interval neighborhoodWidths[params->NUM_STATES];
 		constructNeighborhoods(params, allDerivatives, neighborhoodWidths);
 
 		// for each neighborhood, reach-time = neighborhood-width / (min/max) derivative
-		double crossReachTime = minCrossReachTime(allDerivatives, neighborhoodWidths);
-		assert(crossReachTime >= (reachTimeStep / 2.0));
+		double crossReachTime = minCrossReachTime(params, allDerivatives, neighborhoodWidths);
+		assert(crossReachTime >= (params->reachTimeStep / 2.0));
 
 		double advanceReachTime = min(crossReachTime, reachTimeRemaining);
 		advanceBox(params, allDerivatives, advanceReachTime);
@@ -28,23 +28,23 @@ void face_lift(struct Monitor * const params, double reachTimeRemaining)
 
 bool check_rset(struct Monitor * const params)
 {
-	int maxPts = floor(pow(2, NUM_STATES));
+	int maxPts = floor(pow(2, params->NUM_STATES));
 	for(int pt = 0; pt < maxPts; ++pt)
 	{
-		double HyperPoint[NUM_STATES];
+		double HyperPoint[params->NUM_STATES];
 		int mask = 0x1;
 		// Map integer pt to corresponding HyperPoint
 		int d;
-		for(d = 0; d < NUM_STATES; ++d)
+		for(d = 0; d < params->NUM_STATES; ++d)
 		{
 			bool max = (pt & mask);
 			mask <<= 1;
 			HyperPoint[d] = (max) ? params->rset->dims[d].max : params->rset->dims[d].min;
 		}
 
-		if(!check_state(HyperPoint))
+		if(!check_state(params, HyperPoint))
 		{
-			print_state(HyperPoint);
+			print_state(params, HyperPoint);
 			return false;
 		}
 	}
@@ -59,25 +59,25 @@ bool check_rset(struct Monitor * const params)
 void constructNeighborhoods(struct Monitor * const params, struct Interval* allDerivatives, struct Interval* neighborhoodWidths)
 {
 	// Calculate derivative for each flat face
-	for(int d = 0; d < NUM_STATES; ++d)
+	for(int d = 0; d < params->NUM_STATES; ++d)
 	{
 		for(int max = 0; max < 2; ++max)
 		{
-			struct HyperRect neighborhood = *params->rset;
+			updateNeighborhood(params);
 
 			// Which face in the dimension are we expanding?
 			if(!max) // min
 			{
-				neighborhood.dims[d].max = neighborhood.dims[d].min;
+				params->neighborhood->dims[d].max = params->neighborhood->dims[d].min;
 			}
 			else // max
 			{
-				neighborhood.dims[d].min = neighborhood.dims[d].max;
+				params->neighborhood->dims[d].min = params->neighborhood->dims[d].max;
 			}
 
-			struct Interval faceInterval = getMinMaxDerivative(d, &neighborhood);
+			struct Interval faceInterval = getMinMaxDerivative(params, d, params->neighborhood);
 			double faceDerivative = (!max) ? faceInterval.min : faceInterval.max;
-			double neighborhoodWidth = faceDerivative * reachTimeStep;
+			double neighborhoodWidth = faceDerivative * params->reachTimeStep;
 			if(!max) // min
 			{
 				allDerivatives[d].min = faceDerivative;
@@ -98,59 +98,59 @@ void constructNeighborhoods(struct Monitor * const params, struct Interval* allD
 	{
 		reconstruct = false;
 		// Construct neighborhoods
-		for(int d = 0; d < NUM_STATES; ++d)
+		for(int d = 0; d < params->NUM_STATES; ++d)
 		{
 			for(int max = 0; max < 2; ++max)
 			{
-				struct HyperRect neighborhood = *params->rset;
+				updateNeighborhood(params);
 				double width;
 
 				// Which face in the dimension are we expanding?
 				if(!max) // min
 				{
-					neighborhood.dims[d].max = neighborhood.dims[d].min;
+					params->neighborhood->dims[d].max = params->neighborhood->dims[d].min;
 					width = neighborhoodWidths[d].min;
 				}
 				else // max
 				{
-					neighborhood.dims[d].min = neighborhood.dims[d].max;
+					params->neighborhood->dims[d].min = params->neighborhood->dims[d].max;
 					width = neighborhoodWidths[d].max;
 				}
 
 				// Expand the main side of the neighborhood
 				if(width > 0)
 				{
-					neighborhood.dims[d].max += width;
+					params->neighborhood->dims[d].max += width;
 				}
 				else
 				{
-					neighborhood.dims[d].min += width;
+					params->neighborhood->dims[d].min += width;
 				}
 
 				// Expand the other sides of the neighborhood
-				for(int other_dim = 0; other_dim < NUM_STATES; ++other_dim)
+				for(int other_dim = 0; other_dim < params->NUM_STATES; ++other_dim)
 				{
 					if(other_dim != d)
 					{
 						if(neighborhoodWidths[other_dim].min < 0)
 						{
-							neighborhood.dims[other_dim].min += neighborhoodWidths[other_dim].min;
+							params->neighborhood->dims[other_dim].min += neighborhoodWidths[other_dim].min;
 						}
 
 						if(neighborhoodWidths[other_dim].max > 0)
 						{
-							neighborhood.dims[other_dim].max += neighborhoodWidths[other_dim].min;
+							params->neighborhood->dims[other_dim].max += neighborhoodWidths[other_dim].min;
 						}
 					}
-					assert(neighborhood.dims[d].min <= neighborhood.dims[d].max);
+					assert(params->neighborhood->dims[d].min <= params->neighborhood->dims[d].max);
 				}
 
-				struct Interval neighborhoodInterval = getMinMaxDerivative(d, &neighborhood);
+				struct Interval neighborhoodInterval = getMinMaxDerivative(params, d, params->neighborhood);
 				if(!max)
 				{
 					if(resample_derivative(&reconstruct, max, allDerivatives[d].min, neighborhoodInterval.min))
 					{
-						neighborhoodWidths[d].min = neighborhoodInterval.min * reachTimeStep;
+						neighborhoodWidths[d].min = neighborhoodInterval.min * params->reachTimeStep;
 					}
 					allDerivatives[d].min = neighborhoodInterval.min;
 				}
@@ -158,7 +158,7 @@ void constructNeighborhoods(struct Monitor * const params, struct Interval* allD
 				{
 					if(resample_derivative(&reconstruct, max, allDerivatives[d].max, neighborhoodInterval.max))
 					{
-						neighborhoodWidths[d].max = neighborhoodInterval.max * reachTimeStep;
+						neighborhoodWidths[d].max = neighborhoodInterval.max * params->reachTimeStep;
 					}
 					allDerivatives[d].max = neighborhoodInterval.max;
 				}
@@ -167,7 +167,7 @@ void constructNeighborhoods(struct Monitor * const params, struct Interval* allD
 	}
 
 	// for each neighborhood, correct neighborhood-width
-	for(int d = 0; d < NUM_STATES; ++d)
+	for(int d = 0; d < params->NUM_STATES; ++d)
 	{
 		neighborhoodWidths[d].min = absolute(neighborhoodWidths[d].min);
 		neighborhoodWidths[d].max = absolute(neighborhoodWidths[d].max);
@@ -195,7 +195,7 @@ bool resample_derivative(bool* reconstruct, int max, double prevDerivative, doub
 	return (flip || doubleSize);
 }
 
-struct Interval getMinMaxDerivative(int dim, struct HyperRect* box)
+struct Interval getMinMaxDerivative(struct Monitor * const params, int dim, struct HyperRect* box)
 {
 	// Iterate over 2^N points of HyperRectangle
 	// Determine derivative for every HyperPoint
@@ -204,32 +204,32 @@ struct Interval getMinMaxDerivative(int dim, struct HyperRect* box)
 	rv.min = DBL_MAX;
 	rv.max = -DBL_MAX;
 
-	int maxPts = floor(pow(2, NUM_STATES));
+	int maxPts = floor(pow(2, params->NUM_STATES));
 	for(int pt = 0; pt < maxPts; ++pt)
 	{
-		double HyperPoint[NUM_STATES];
+		double HyperPoint[params->NUM_STATES];
 		int mask = 0x1;
 		// Map integer pt to corresponding HyperPoint
 		int d;
-		for(d = 0; d < NUM_STATES; ++d)
+		for(d = 0; d < params->NUM_STATES; ++d)
 		{
 			bool max = (pt & mask);
 			mask <<= 1;
 			HyperPoint[d] = (max) ? box->dims[d].max : box->dims[d].min;
 		}
-		double dv = derivative(dim, HyperPoint);
+		double dv = params->derivative(dim, HyperPoint);
 		updateInterval(&rv, dv);
 	}
 
 	// Check inflection points of the dynamical system
-	updateInflectionPoints(&rv, dim, box);
+	params->updateInflectionPoints(&rv, dim, box);
 	return rv;
 }
 
-double minCrossReachTime(struct Interval* allDerivatives, struct Interval* neighborhoodWidths)
+double minCrossReachTime(struct Monitor * const params, struct Interval* allDerivatives, struct Interval* neighborhoodWidths)
 {
 	double minTime = DBL_MAX;
-	for(int d = 0; d < NUM_STATES; ++d)
+	for(int d = 0; d < params->NUM_STATES; ++d)
 	{
 		double absMin = absolute(allDerivatives[d].min);
 		if(absMin > EPSILON)
@@ -255,7 +255,7 @@ void advanceBox(struct Monitor * const params, struct Interval* allDerivatives, 
 {
 	if(reachTime < DBL_MAX)
 	{
-		for(int d = 0; d < NUM_STATES; ++d)
+		for(int d = 0; d < params->NUM_STATES; ++d)
 		{
 			params->rset->dims[d].min += reachTime * allDerivatives[d].min;
 			params->rset->dims[d].max += reachTime * allDerivatives[d].max;
