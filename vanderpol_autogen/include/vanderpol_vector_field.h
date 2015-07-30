@@ -1,17 +1,17 @@
 #ifndef VANDERPOL_VECTOR_FIELD_H
 #define VANDERPOL_VECTOR_FIELD_H
 
-#include "rt_face_lift.h"
 #include "vanderpol_params.h"
+#include "rt_face_lift.h"
 
-const struct Interval STATE_BOUNDS[VANDERPOL_NUM_STATES] =
+const struct Interval VANDERPOL_STATE_BOUNDS[VANDERPOL_NUM_STATES] =
 {
 	{-2.5, 2.5},
 	{-2.5, 2.5},
 };
 
-const double STEP = 0.05;
-const double SAMPLES = 30.0;
+const double VANDERPOL_STEP = 0.05;
+const double VANDERPOL_SAMPLES = 30.0;
 
-derivativeFunDef derivative = &vanderpol_derivative;
+double vanderpol_hyperPoint[VANDERPOL_NUM_STATES] = {0};
 #endif // VANDERPOL_VECTOR_FIELD_H

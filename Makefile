@@ -13,11 +13,11 @@ vanderpol: compile
 	./plotSolution.py
 
 visual_pendulum: compile
-	./build/pendulum_vector_field > data.txt
+	./build/vector_field PENDULUM > data.txt
 	./plotSolution.py "VectorField"
 
 visual_vanderpol: compile
-	./build/vanderpol_vector_field > data.txt
+	./build/vector_field VANDERPOL > data.txt
 	./plotSolution.py "VectorField"
 
 ctags:

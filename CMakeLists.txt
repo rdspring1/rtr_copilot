@@ -18,11 +18,8 @@ target_include_directories(rt_reachability PUBLIC "${PROJECT_SOURCE_DIR}/pendulu
 target_include_directories(rt_reachability PUBLIC "${PROJECT_SOURCE_DIR}/vanderpol_autogen/include")
 target_link_libraries(rt_reachability m)
 
-#add_executable(pendulum_vector_field ${PENDULUM_AUTOGEN_SRC_FILES} ${LINEAR_SRC_FILES} ${PROJECT_SRC_FILES} vector_field.c)
-#target_include_directories(pendulum_vector_field PUBLIC "${PROJECT_SOURCE_DIR}/linear_system/include")
-#target_include_directories(pendulum_vector_field PUBLIC "${PROJECT_SOURCE_DIR}/pendulum_autogen/include")
-#target_link_libraries(pendulum_vector_field m)
-
-#add_executable(vanderpol_vector_field ${VANDERPOL_AUTOGEN_SRC_FILES} ${PROJECT_SRC_FILES} vector_field.c)
-#target_include_directories(vanderpol_vector_field PUBLIC "${PROJECT_SOURCE_DIR}/vanderpol_autogen/include")
-#target_link_libraries(vanderpol_vector_field m)
+add_executable(vector_field ${PENDULUM_AUTOGEN_SRC_FILES} ${LINEAR_SRC_FILES} ${VANDERPOL_AUTOGEN_SRC_FILES} ${PROJECT_SRC_FILES} vector_field.c)
+target_include_directories(vector_field PUBLIC "${PROJECT_SOURCE_DIR}/linear_system/include")
+target_include_directories(vector_field PUBLIC "${PROJECT_SOURCE_DIR}/pendulum_autogen/include")
+target_include_directories(vector_field PUBLIC "${PROJECT_SOURCE_DIR}/vanderpol_autogen/include")
+target_link_libraries(vector_field m)
