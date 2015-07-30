@@ -5,11 +5,11 @@ compile: clean
 	cd build && cmake .. && $(MAKE)
 
 pendulum: compile
-	./build/pendulum > data.txt
+	./build/rt_reachability PENDULUM > data.txt
 	./plotSolution.py
 
 vanderpol: compile
-	./build/vanderpol > data.txt
+	./build/rt_reachability VANDERPOL > data.txt
 	./plotSolution.py
 
 visual_pendulum: compile

@@ -1,7 +1,8 @@
 #ifndef _VANDERPOL_PARAMS_H_
 #define _VANDERPOL_PARAMS_H_
 
-#include "vanderpol_constants.h"
+#define VANDERPOL_NUM_STATES 2
+
 #include "constants.h"
 #include "hyper_rect.h"
 #include "util.h"

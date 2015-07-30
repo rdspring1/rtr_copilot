@@ -1,4 +1,5 @@
 #include "linear_control.h"
+#include "linear.h"
 
 double bound(struct Interval i, double value)
 {
@@ -16,24 +17,22 @@ double bound(struct Interval i, double value)
 	}
 }
 
-void check_input(double* values)
+void check_input(struct LinearParams * const params, double* values)
 {
-	int i;
-	for(i = 0; i < NUM_INPUTS; ++i)
+	for(unsigned i = 0; i < params->NUM_INPUTS; ++i)
 	{
-		values[i] = bound(input_constraints[i], values[i]);
+		values[i] = bound(params->input_constraints[i], values[i]);
 	}
 }
 
-void generate_input(double* state, double* u)
+void generate_input(struct LinearParams * const params, double* state)
 {
-	int i,j;
-	for(i = 0; i < NUM_INPUTS; ++i)
+	for(unsigned i = 0; i < params->NUM_INPUTS; ++i)
 	{
-		for(j = 0; j < NUM_STATES; ++j)
+		for(unsigned j = 0; j < params->NUM_STATES; ++j)
 		{
-			u[i] += K[i][j] * state[j];
+			params->u[i] += params->K[i * params->NUM_INPUTS + j] * state[j];
 		}
 	}
-	check_input(u);
+	check_input(params, params->u);
 }

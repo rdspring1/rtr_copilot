@@ -1,26 +1,25 @@
 #include "linear.h"
+#include "linear_control.h"
 
-double linear_derivative(int dim, double* state)
+double linear_derivative(struct LinearParams * const params, int dim, double* state)
 {
 	// return value
 	double rv = 0;
 
 	// AX
-	int i;
-	for(i = 0; i < NUM_STATES; ++i)
+	for(int i = 0; i < params->NUM_STATES; ++i)
 	{
-		rv += A[dim][i] * state[i];
+		rv += params->A[dim * params->NUM_STATES + i] * state[i];
 	}
 
 	// input saturation
 	// u = KX
-	double u[NUM_INPUTS] = {0};
-	generate_input(state, u);
+	generate_input(params, state);
 
 	// Bu
-	for(i = 0; i < NUM_INPUTS; ++i)
+	for(int i = 0; i < params->NUM_INPUTS; ++i)
 	{
-		rv += B[dim][i] * u[i];
+		rv += params->B[dim * params->NUM_INPUTS + i] * params->u[i];
 	}
 	return rv;
 }

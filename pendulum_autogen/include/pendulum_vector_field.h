@@ -1,5 +1,5 @@
-#ifndef VECTOR_FIELD_H
-#define VECTOR_FIELD_H
+#ifndef _PENDULUM_VECTOR_FIELD_H
+#define _PENDULUM_VECTOR_FIELD_H
 
 #include "rt_face_lift.h"
 
@@ -14,4 +14,4 @@ const struct Interval STATE_BOUNDS[NUM_STATES] =
 const double STEP = 0.05;
 const double SAMPLES = 15.0;
 
-#endif // VECTOR_FIELD_H
+#endif // _PENDULUM_VECTOR_FIELD_H

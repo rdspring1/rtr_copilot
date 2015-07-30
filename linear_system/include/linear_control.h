@@ -1,12 +1,11 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include "input_params.h"
-
+#include "linear.h"
 #include <stdbool.h>
 
 static double bound(struct Interval i, double value);
-static void check_input(double* values);
-void generate_input(double* state, double* u);
+static void check_input(struct LinearParams * const params, double* values);
+void generate_input(struct LinearParams * const params, double* state);
 
 #endif // INPUT_H

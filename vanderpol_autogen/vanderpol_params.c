@@ -8,8 +8,8 @@ struct Interval vanderpol_dims[VANDERPOL_NUM_STATES] =
 
 struct HyperRect vanderpol_rset = { vanderpol_dims };
 
-struct Interval neighborhood_dims[VANDERPOL_NUM_STATES] = { 0 };
-struct HyperRect neighborhood_rset = { neighborhood_dims };
+struct Interval vanderpol_neighborhood_dims[VANDERPOL_NUM_STATES] = { 0 };
+struct HyperRect vanderpol_neighborhood_rset = { vanderpol_neighborhood_dims };
 
 const struct Interval vanderpol_constraints[VANDERPOL_NUM_STATES] =
 {
@@ -25,7 +25,7 @@ struct Monitor vanderpol_params =
 	&vanderpol_derivative,
 	&vanderpol_updateInflectionPoints,
 	&vanderpol_rset,
-	&neighborhood_rset
+	&vanderpol_neighborhood_rset
 };
 
 double x_derivative(double* state)
