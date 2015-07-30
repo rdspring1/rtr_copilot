@@ -4,6 +4,10 @@ compile: clean
 	mkdir build
 	cd build && cmake .. && $(MAKE)
 
+ompl: compile
+	./build/ompl_rtr_monitor
+	/usr/bin/python ./inverted_pendulum_rtr_ompl/animate.py path.txt 
+
 pendulum: compile
 	./build/rt_reachability PENDULUM > data.txt
 	./plotSolution.py
