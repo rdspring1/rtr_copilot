@@ -5,7 +5,7 @@ compile: clean
 	cd build && cmake .. && $(MAKE)
 
 ompl: compile
-	./build/ompl_rtr_monitor
+	./build/ompl_rtr_monitor > path.txt
 	/usr/bin/python ./inverted_pendulum_rtr_ompl/animate.py path.txt 
 
 pendulum: compile
@@ -31,3 +31,4 @@ clean:
 	rm -rf build/
 	rm -rf *.*~
 	rm -rf data.txt
+	rm -rf path*.txt

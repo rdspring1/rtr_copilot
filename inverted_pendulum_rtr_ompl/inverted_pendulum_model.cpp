@@ -116,7 +116,7 @@ void PendulumPostIntegration (const ob::State* /*state*/, const oc::Control* /*c
 	nonlinear_pendulum_params.rset->dims[0].min = pos->values[0];
 	nonlinear_pendulum_params.rset->dims[0].max = pos->values[0];
 
-	nonlinear_pendulum_params.rset->dims[1].min  = theta->value;
+	nonlinear_pendulum_params.rset->dims[1].min = theta->value;
 	nonlinear_pendulum_params.rset->dims[1].max = theta->value + EPSILON;
 
 	nonlinear_pendulum_params.rset->dims[2].min = vel->values[0];
@@ -124,11 +124,17 @@ void PendulumPostIntegration (const ob::State* /*state*/, const oc::Control* /*c
 
 	nonlinear_pendulum_params.rset->dims[3].min = omega->value;
 	nonlinear_pendulum_params.rset->dims[3].max = omega->value;
-		
-	assert(face_lift(&nonlinear_pendulum_params, NONLINEAR_PENDULUM_REACH_TIME));
-	//{
-	//	std::cout << "Dynamic System Failure\n" << std::endl;
-	//}
+
+	// Print Current State and RTR Monitor State
+	std::cout << pos->values[0] << " " << theta->value << " " << vel->values[0] << " " << omega->value;
+	if(!face_lift(&nonlinear_pendulum_params, NONLINEAR_PENDULUM_REACH_TIME))
+	{
+		std::cout << " Dynamic_System_Failure" << std::endl;
+	}
+	else
+	{
+		std::cout << std::endl;
+	}
 }
 
 bool isStateValidPen(const ob::State *state)
@@ -202,6 +208,7 @@ void planWithSimpleSetupPen(std::string title = "Default")
 	/// attempt to solve the problem within one second of planning time
 	ob::PlannerStatus solved = ss.solve(60);
 
+	/*
 	if (solved)
 	{
 		ompl::control::PathControl& path = ss.getSolutionPath();
@@ -212,6 +219,7 @@ void planWithSimpleSetupPen(std::string title = "Default")
 		path.printAsMatrix(fout);
 		fout.close();
 	}
+	*/
 }
 
 int main(int, char **)

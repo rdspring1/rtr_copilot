@@ -6,12 +6,13 @@ import matplotlib.animation as animation
 import math
 import fileinput
 
+dims = 4
 xaxis = 5
 L = 0.5
 l = 0.5
 
 #------------------------------------------------------------
-data_points = [[float(x) for x in line.split(' ')] for line in fileinput.input()]
+data_points = [[x for x in line.split(' ')] for line in fileinput.input()]
 
 # set up figure and animation
 fig = plt.figure()
@@ -20,20 +21,26 @@ ax = fig.add_subplot(111, aspect='equal', autoscale_on=False,
 ax.grid()
 
 line, = ax.plot([], [], 'o-', lw=2)
+rtr_monitor_text = ax.text(0.02, 0.95, '', transform=ax.transAxes)
 
 def init():
     """initialize animation"""
     line.set_data([], [])
+    rtr_monitor_text.set_text('')
     return line
 
 def animate(i):
     """perform animation step"""
     line.set_data(get_data_pt(i))
+    if(len(data_points[i]) == dims+1):
+        rtr_monitor_text.set_text(data_points[i][dims])
+    else:
+	rtr_monitor_text.set_text('Safe')
     return line
 
 def get_data_pt(i):
-    x = np.cumsum([data_points[i][0], L, l * sin(data_points[i][1])])
-    y = np.cumsum([0, 0, l * cos(data_points[i][1])])
+    x = np.cumsum([float(data_points[i][0]), L, l * sin(float(data_points[i][1]))])
+    y = np.cumsum([0, 0, l * cos(float(data_points[i][1]))])
     return (x, y)
 
 from time import time

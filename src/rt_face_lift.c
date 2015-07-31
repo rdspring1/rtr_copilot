@@ -7,7 +7,7 @@ bool face_lift(struct Monitor * const params, double reachTimeRemaining)
 	{
 		if(!check_rset(params))
 		{
-			print_rset(params);
+			//print_rset(params);
 			return false;
 		}
 
@@ -47,7 +47,6 @@ bool check_rset(struct Monitor * const params)
 
 		if(!check_state(params, HyperPoint))
 		{
-			print_state(params, HyperPoint);
 			return false;
 		}
 	}

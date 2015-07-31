@@ -22,7 +22,7 @@ void print_state(struct Monitor * const params, double* state)
 	int i;
 	for(i = 0; i < params->NUM_STATES; ++i)
 	{
-		printf("%f \t", state[i]);
+		printf("%f ", state[i]);
 	}
 	printf("\n");
 }
