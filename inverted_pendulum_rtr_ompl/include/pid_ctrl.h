@@ -43,18 +43,12 @@ namespace ompl
 				{
 					public:
 
-						Motion(void) : state(NULL), control(NULL)
-					{
-					}
+						Motion(void) : state(NULL), control(NULL) {}
 
 						/** \brief Constructor that allocates memory for the state and the control */
-						Motion(const SpaceInformation *si) : state(si->allocState()), control(si->allocControl())
-					{
-					}
+						Motion(const SpaceInformation *si) : state(si->allocState()), control(si->allocControl()) {}
 
-						~Motion(void)
-						{
-						}
+						~Motion(void) {}
 
 						/** \brief The state contained by the motion */
 						base::State       *state;
@@ -76,6 +70,8 @@ namespace ompl
 
 				/** \brief List of PID motions **/
 				std::vector<Motion*> motions;
+
+				const double EPSILON = 0.1;
 		};
 	}
 }

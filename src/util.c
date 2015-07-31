@@ -4,7 +4,7 @@ const double EPSILON = 0.00001;
 
 bool check_bound(struct Interval i, double value)
 {
-	return ((value > i.max) && (value < i.min)) ? false : true;
+	return ((value > i.max) || (value < i.min)) ? false : true;
 }
 
 void print_rset(struct Monitor * const params)

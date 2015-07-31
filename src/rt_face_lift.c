@@ -1,12 +1,15 @@
 #include "rt_face_lift.h"
 
-void face_lift(struct Monitor * const params, double reachTimeRemaining)
+bool face_lift(struct Monitor * const params, double reachTimeRemaining)
 {
-	int rnds = 0;
+	//print_rset(params);
 	while(reachTimeRemaining > 0)
 	{
-		print_rset(params);
-		assert(check_rset(params));
+		if(!check_rset(params))
+		{
+			print_rset(params);
+			return false;
+		}
 
 		// min / max derivative for each neighborhood to determine minimum reach-time
 		struct Interval allDerivatives[params->NUM_STATES];
@@ -23,7 +26,7 @@ void face_lift(struct Monitor * const params, double reachTimeRemaining)
 		reachTimeRemaining -= advanceReachTime;
 		//printf("remaining time: %f\n", reachTimeRemaining);
 	}
-	//printf("Round: %d\t", rnds);
+	return true;
 }
 
 bool check_rset(struct Monitor * const params)

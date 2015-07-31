@@ -1,6 +1,7 @@
 #include "pendulum_params.h"
 #include "linear.h"
 
+/* RTR Monitor Parameters */
 struct Interval pendulum_dims[PENDULUM_NUM_STATES] =
 {
 	{-0.001, 0.001},
@@ -37,6 +38,7 @@ struct Monitor pendulum_params =
 	&pendulum_neighborhood_rset
 };
 
+/* Linear Model Parameters */
 // x' = Ax + Bu
 const double pendulum_A[PENDULUM_NUM_STATES][PENDULUM_NUM_STATES] =
 {

@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-void face_lift(struct Monitor* params, double reachTimeRemaining);
+bool face_lift(struct Monitor* params, double reachTimeRemaining);
 static bool check_rset(struct Monitor * const params);
 static void constructNeighborhoods(struct Monitor * const params, struct Interval* allDerivatives, struct Interval* neighborhoodWidths);
 static bool resample_derivative(bool* reconstruct, int max, double prevDerivative, double currDerivative);

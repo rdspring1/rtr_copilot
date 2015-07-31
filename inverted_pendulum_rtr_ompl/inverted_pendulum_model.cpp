@@ -12,8 +12,11 @@
 #include <fstream>
 #include <vector>
 #include <math.h>
+#include <float.h>
+
 #include "PID_ctrl.h"
 
+const double EPSILON = 0.01;
 const double G = 9.81;
 const double l = 0.3;
 const double m = 0.25;
@@ -21,6 +24,42 @@ const double M = 0.5;
 
 // Pendulum Limits
 const double xaxis_limit = 4.5;
+
+extern "C" 
+{
+#include "constants.h"
+#include "nonlinear_pendulum_params.h"
+#include "rt_face_lift.h"
+}
+
+/* RTR Monitor Global Variables */
+struct Interval nonlinear_pendulum_dims[NONLINEAR_PENDULUM_NUM_STATES] = { 0 };
+struct HyperRect nonlinear_pendulum_rset = { nonlinear_pendulum_dims };
+
+struct Interval nonlinear_pendulum_neighborhood_dims[NONLINEAR_PENDULUM_NUM_STATES] = { 0 };
+struct HyperRect nonlinear_pendulum_neighborhood_rset = { nonlinear_pendulum_neighborhood_dims };
+
+const struct Interval nonlinear_pendulum_constraints[NONLINEAR_PENDULUM_NUM_STATES] =
+{
+	{-DBL_MAX, DBL_MAX},
+	{-M_PI / 6.0, M_PI / 6.0},
+	{-5.0, 5.0},
+	{-DBL_MAX, DBL_MAX}
+};
+
+struct Monitor nonlinear_pendulum_params =
+{
+	NONLINEAR_PENDULUM_NUM_STATES,
+	STEPS300,
+	nonlinear_pendulum_constraints,
+	&nonlinear_pendulum_derivative,
+	&nonlinear_pendulum_updateInflectionPoints,
+	&nonlinear_pendulum_rset,
+	&nonlinear_pendulum_neighborhood_rset
+};
+
+const double NONLINEAR_PENDULUM_REACH_TIME = 0.25;
+/***********************************************************************************************/
 
 typedef std::pair<double, double> Point2D;
 typedef std::vector<Point2D> Rect;
@@ -55,21 +94,41 @@ void PendulumODE (const oc::ODESolver::StateType& q, const oc::Control* control,
 // This is a callback method invoked after numerical integration.
 void PendulumPostIntegration (const ob::State* /*state*/, const oc::Control* /*control*/, const double /*duration*/, ob::State *result)
 {
-    const ompl::base::CompoundState* cstate = result->as<ompl::base::CompoundState>();
+	const ompl::base::CompoundState* cstate = result->as<ompl::base::CompoundState>();
 
-    const ob::RealVectorStateSpace::StateType *pos = cstate->as<ob::RealVectorStateSpace::StateType>(0);
-    const ob::RealVectorStateSpace::StateType *vel = cstate->as<ob::RealVectorStateSpace::StateType>(2);
+	const ob::RealVectorStateSpace::StateType *pos = cstate->as<ob::RealVectorStateSpace::StateType>(0);
+	const ob::SO2StateSpace::StateType *theta = cstate->as<ob::SO2StateSpace::StateType>(1);
+	const ob::RealVectorStateSpace::StateType *vel = cstate->as<ob::RealVectorStateSpace::StateType>(2);
+	const ob::SO2StateSpace::StateType *omega = cstate->as<ob::SO2StateSpace::StateType>(3);
 
-    if(pos->values[0] < -xaxis_limit)
-    {
-	    pos->values[0]  = -xaxis_limit;
-	    vel->values[0] = 0.0;
-    }
-    else if(pos->values[0] > xaxis_limit)
-    {
-	    pos->values[0] = xaxis_limit;
-	    vel->values[0] = 0.0;
-    }
+	if(pos->values[0] < -xaxis_limit)
+	{
+		pos->values[0]  = -xaxis_limit;
+		vel->values[0] = 0.0;
+	}
+	else if(pos->values[0] > xaxis_limit)
+	{
+		pos->values[0] = xaxis_limit;
+		vel->values[0] = 0.0;
+	}
+
+	// Initialize rset for current state
+	nonlinear_pendulum_params.rset->dims[0].min = pos->values[0];
+	nonlinear_pendulum_params.rset->dims[0].max = pos->values[0];
+
+	nonlinear_pendulum_params.rset->dims[1].min  = theta->value;
+	nonlinear_pendulum_params.rset->dims[1].max = theta->value + EPSILON;
+
+	nonlinear_pendulum_params.rset->dims[2].min = vel->values[0];
+	nonlinear_pendulum_params.rset->dims[2].max = vel->values[0];
+
+	nonlinear_pendulum_params.rset->dims[3].min = omega->value;
+	nonlinear_pendulum_params.rset->dims[3].max = omega->value;
+		
+	assert(face_lift(&nonlinear_pendulum_params, NONLINEAR_PENDULUM_REACH_TIME));
+	//{
+	//	std::cout << "Dynamic System Failure\n" << std::endl;
+	//}
 }
 
 bool isStateValidPen(const ob::State *state)
@@ -121,7 +180,7 @@ void planWithSimpleSetupPen(std::string title = "Default")
 	/// create a start state
 	ob::ScopedState<> start(space);
 	start[0] = 0.0;
-	start[1] = 0.35;
+	start[1] = -0.35;
 	start[2] = 0.0;
 	start[3] = 0.0;
 
@@ -141,7 +200,7 @@ void planWithSimpleSetupPen(std::string title = "Default")
 	ss.setup();
 
 	/// attempt to solve the problem within one second of planning time
-	ob::PlannerStatus solved = ss.solve(0.25);
+	ob::PlannerStatus solved = ss.solve(60);
 
 	if (solved)
 	{

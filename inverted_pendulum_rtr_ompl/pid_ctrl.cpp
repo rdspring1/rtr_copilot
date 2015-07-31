@@ -35,6 +35,8 @@ void ompl::control::PID::control_action(oc::Control*& control, ob::State*& state
 {
 	static const double KP = 25.0;
 	static const double KD = 5.0;
+	//static const double KP = 0.0;
+	//static const double KD = 0.0;
 	double* u = control->as<oc::RealVectorControlSpace::ControlType>()->values;
 
 	const ompl::base::CompoundState* cstate = state->as<ompl::base::CompoundState>();
@@ -84,7 +86,6 @@ ompl::base::PlannerStatus ompl::control::PID::solve(const base::PlannerTerminati
 
 		// Add State Propagation
 		unsigned int cd = siC_->propagateWhileValid(motions.back()->state, new_motion->control, siC_->getMinControlDuration(), new_motion->state); 
-
 		motions.push_back(new_motion);
 
 		double dist = 0.0;
