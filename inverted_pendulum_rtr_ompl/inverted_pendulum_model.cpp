@@ -14,9 +14,9 @@
 #include <math.h>
 #include <float.h>
 
-#include "PID_ctrl.h"
+#include "pid_ctrl.h"
 
-const double EPSILON = 0.01;
+const double GAMMA = 0.01;
 const double G = 9.81;
 const double l = 0.3;
 const double m = 0.25;
@@ -117,7 +117,7 @@ void PendulumPostIntegration (const ob::State* /*state*/, const oc::Control* /*c
 	nonlinear_pendulum_params.rset->dims[0].max = pos->values[0];
 
 	nonlinear_pendulum_params.rset->dims[1].min = theta->value;
-	nonlinear_pendulum_params.rset->dims[1].max = theta->value + EPSILON;
+	nonlinear_pendulum_params.rset->dims[1].max = theta->value + GAMMA;
 
 	nonlinear_pendulum_params.rset->dims[2].min = vel->values[0];
 	nonlinear_pendulum_params.rset->dims[2].max = vel->values[0];
