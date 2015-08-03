@@ -1,6 +1,8 @@
 *.*~
 *.o
+*.hi
 *.txt
+rtr
 build
 .cmake
 .DS_Store
