@@ -1,13 +1,17 @@
 #include "rt_face_lift.h"
 
-bool face_lift(struct Monitor * const params, double reachTimeRemaining)
+bool face_lift(struct Monitor * const params, double reachTimeRemaining, bool debug)
 {
 	//print_rset(params);
 	while(reachTimeRemaining > 0)
 	{
+		if(debug)
+		{
+			print_rset(params);
+		}
+
 		if(!check_rset(params))
 		{
-			//print_rset(params);
 			return false;
 		}
 

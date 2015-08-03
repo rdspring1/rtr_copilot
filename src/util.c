@@ -9,8 +9,7 @@ bool check_bound(struct Interval i, double value)
 
 void print_rset(struct Monitor * const params)
 {
-	int i;
-	for(i = 0; i < params->NUM_STATES; ++i)
+	for(int i = 0; i < params->NUM_STATES; ++i)
 	{
 		printf("[%f %f]\t", params->rset->dims[i].min, params->rset->dims[i].max);
 	}
@@ -19,8 +18,7 @@ void print_rset(struct Monitor * const params)
 
 void print_state(struct Monitor * const params, double* state)
 {
-	int i;
-	for(i = 0; i < params->NUM_STATES; ++i)
+	for(int i = 0; i < params->NUM_STATES; ++i)
 	{
 		printf("%f ", state[i]);
 	}
@@ -29,8 +27,7 @@ void print_state(struct Monitor * const params, double* state)
 
 bool check_state(struct Monitor * const params, double* state)
 {
-	int i;
-	for(i = 0; i < params->NUM_STATES; ++i)
+	for(int i = 0; i < params->NUM_STATES; ++i)
 	{
 		if(!check_bound(params->state_constraints[i], state[i]))
 		{

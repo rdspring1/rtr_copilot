@@ -42,7 +42,7 @@ struct HyperRect nonlinear_pendulum_neighborhood_rset = { nonlinear_pendulum_nei
 const struct Interval nonlinear_pendulum_constraints[NONLINEAR_PENDULUM_NUM_STATES] =
 {
 	{-DBL_MAX, DBL_MAX},
-	{-M_PI / 6.0, M_PI / 6.0},
+	{-M_PI / 3.0, M_PI / 3.0},
 	{-5.0, 5.0},
 	{-DBL_MAX, DBL_MAX}
 };
@@ -127,13 +127,13 @@ void PendulumPostIntegration (const ob::State* /*state*/, const oc::Control* /*c
 
 	// Print Current State and RTR Monitor State
 	std::cout << pos->values[0] << " " << theta->value << " " << vel->values[0] << " " << omega->value;
-	if(!face_lift(&nonlinear_pendulum_params, NONLINEAR_PENDULUM_REACH_TIME))
+	if(!face_lift(&nonlinear_pendulum_params, NONLINEAR_PENDULUM_REACH_TIME, false))
 	{
 		std::cout << " Dynamic_System_Failure" << std::endl;
 	}
 	else
 	{
-		std::cout << std::endl;
+		std::cout << " Safe" << std::endl;
 	}
 }
 
@@ -206,18 +206,18 @@ void planWithSimpleSetupPen(std::string title = "Default")
 	ss.setup();
 
 	/// attempt to solve the problem within one second of planning time
-	ob::PlannerStatus solved = ss.solve(60);
+	ob::PlannerStatus solved = ss.solve(10);
 
 	/*
-	if (solved)
-	{
-		ompl::control::PathControl& path = ss.getSolutionPath();
-		path.printAsMatrix(std::cout);
+	   if (solved)
+	   {
+	   ompl::control::PathControl& path = ss.getSolutionPath();
+	   path.printAsMatrix(std::cout);
 
-		// print path to file
-		std::ofstream fout("path.txt");
-		path.printAsMatrix(fout);
-		fout.close();
+	// print path to file
+	std::ofstream fout("path.txt");
+	path.printAsMatrix(fout);
+	fout.close();
 	}
 	*/
 }

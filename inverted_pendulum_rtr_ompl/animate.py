@@ -34,8 +34,6 @@ def animate(i):
     line.set_data(get_data_pt(i))
     if(len(data_points[i]) == dims+1):
         rtr_monitor_text.set_text(data_points[i][dims])
-    else:
-	rtr_monitor_text.set_text('Safe')
     return line
 
 def get_data_pt(i):
@@ -44,14 +42,12 @@ def get_data_pt(i):
     return (x, y)
 
 from time import time
-t0 = time()
-animate(0)
-t1 = time()
-interval = len(data_points) * (t1 - t0)
+frame_rate = 60.0
+interval = 1000.0/frame_rate
 
 # choose the interval based on dt and the time to animate one step
-ani = animation.FuncAnimation(fig, animate, frames=len(data_points),
-                              interval=interval, blit=False, init_func=init)
+ani = animation.FuncAnimation(fig, animate, frames=len(data_points), init_func=init,
+                              interval=interval, blit=False)
 
 # save the animation as an mp4.  This requires ffmpeg or mencoder to be
 # installed.  The extra_args ensure that the x264 codec is used, so that

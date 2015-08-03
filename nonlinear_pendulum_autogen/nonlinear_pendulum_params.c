@@ -9,10 +9,10 @@
 
 double control_action(double* state)
 {
-	//static const double KP = 25.0;
-	//static const double KD = 5.0;
-	static const double KP = 0.0;
-	static const double KD = 0.0;
+	static const double KP = 25.0;
+	static const double KD = 5.0;
+	//static const double KP = 0.0;
+	//static const double KD = 0.0;
 	return KP * state[1] + KD * state[3];
 }
 

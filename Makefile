@@ -8,6 +8,10 @@ ompl: compile
 	./build/ompl_rtr_monitor > path.txt
 	/usr/bin/python ./inverted_pendulum_rtr_ompl/animate.py path.txt 
 
+nlp: compile
+	./build/rt_reachability NONLINEAR_PENDULUM > data.txt
+	./plotPendulum.py
+
 pendulum: compile
 	./build/rt_reachability PENDULUM > data.txt
 	./plotSolution.py

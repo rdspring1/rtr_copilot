@@ -14,9 +14,10 @@ file(GLOB LINEAR_SRC_FILES "linear_system/*.c")
 file(GLOB NONLINEAR_PENDULUM_SRC_FILES "nonlinear_pendulum_autogen/*.c")
 file(GLOB OMPL_SRC_FILES "inverted_pendulum_rtr_ompl/*.cpp")
 
-add_executable(rt_reachability ${PENDULUM_AUTOGEN_SRC_FILES} ${LINEAR_SRC_FILES} ${VANDERPOL_AUTOGEN_SRC_FILES} ${PROJECT_SRC_FILES} rt_reachability.c)
+add_executable(rt_reachability ${PENDULUM_AUTOGEN_SRC_FILES} ${LINEAR_SRC_FILES} ${NONLINEAR_PENDULUM_SRC_FILES} ${VANDERPOL_AUTOGEN_SRC_FILES} ${PROJECT_SRC_FILES} rt_reachability.c)
 target_include_directories(rt_reachability PUBLIC "${PROJECT_SOURCE_DIR}/linear_system/include")
 target_include_directories(rt_reachability PUBLIC "${PROJECT_SOURCE_DIR}/pendulum_autogen/include")
+target_include_directories(rt_reachability PUBLIC "${PROJECT_SOURCE_DIR}/nonlinear_pendulum_autogen/include")
 target_include_directories(rt_reachability PUBLIC "${PROJECT_SOURCE_DIR}/vanderpol_autogen/include")
 target_link_libraries(rt_reachability m)
 
