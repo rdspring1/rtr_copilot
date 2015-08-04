@@ -216,8 +216,7 @@ struct Interval getMinMaxDerivative(struct Monitor * const params, int dim, stru
 		double HyperPoint[params->NUM_STATES];
 		int mask = 0x1;
 		// Map integer pt to corresponding HyperPoint
-		int d;
-		for(d = 0; d < params->NUM_STATES; ++d)
+		for(int d = 0; d < params->NUM_STATES; ++d)
 		{
 			bool max = (pt & mask);
 			mask <<= 1;
