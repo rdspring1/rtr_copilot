@@ -145,7 +145,7 @@ void constructNeighborhoods(struct Monitor * const params, struct Interval* allD
 
 						if(neighborhoodWidths[other_dim].max > 0)
 						{
-							params->neighborhood->dims[other_dim].max += neighborhoodWidths[other_dim].min;
+							params->neighborhood->dims[other_dim].max += neighborhoodWidths[other_dim].max;
 						}
 					}
 					assert(params->neighborhood->dims[d].min <= params->neighborhood->dims[d].max);
