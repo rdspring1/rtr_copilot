@@ -33,19 +33,19 @@ reconstructNeighborhood :: [Interval] -> Neighborhood -> Neighborhood
 reconstructNeighborhood hyperRect flatN
 	| (reconstruct rn) = reconstructNeighborhood hyperRect (community rn)
 	| otherwise = (community rn)
-		where rn = reconstructNeighborhood' hyperRect flatN 1 False [] []
+		where rn = reconstructNeighborhood' hyperRect flatN 0 False [] []
 
 reconstructNeighborhood' ::[Interval] -> Neighborhood -> Int -> Bool -> [Interval] -> [Interval] -> RNeighborhood
 reconstructNeighborhood' hyperRect flatN states rebuild delta' width'
-	| states > num_states = (RNeighborhood rebuild (Neighborhood delta' width'))
+	| states >= num_states = (RNeighborhood rebuild (Neighborhood delta' width'))
 	| otherwise = reconstructNeighborhood' hyperRect flatN (states+1) (rebuild .|. rd) ((Interval minDV maxDV):delta') ((Interval minWidth maxWidth):width')  
 		where 	minWidth = (if rdMin then (minDV * reachTimeStep) else (minV ((width flatN) !! states)))
 		 	maxWidth = (if rdMax then (maxDV * reachTimeStep) else (maxV ((width flatN) !! states)))
 			rd = (rdMin .|. rdMax)
 			rdMin = resampleDerivative False (minV ((delta flatN) !! states)) minDV
 			rdMax = resampleDerivative True (maxV ((delta flatN) !! states)) maxDV
-			minDV = (minV (getMinMaxDerivative (generateNeighborhood hyperRect states False (width flatN)) (num_states^2) states (-1/0) (1/0)))
-			maxDV = (maxV (getMinMaxDerivative (generateNeighborhood hyperRect states True (width flatN)) (num_states^2) states (-1/0) (1/0)))
+			minDV = (minV (getMinMaxDerivative (generateNeighborhood hyperRect states False (width flatN)) (num_states^2) (states+1) (-1/0) (1/0)))
+			maxDV = (maxV (getMinMaxDerivative (generateNeighborhood hyperRect states True (width flatN)) (num_states^2) (states+1) (-1/0) (1/0)))
 			num_states = 4
 			reachTimeStep = 0.0006
 
