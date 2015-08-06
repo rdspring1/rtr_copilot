@@ -20,18 +20,15 @@ def round_scale(value, axis_range):
     most_sig = int(math.floor(math.log10(abs(value))))
     return round(value, -most_sig)
 
-def plot_projection(data, xaxis, yaxis):
+def plot_vector_field(data):
     newdata = []
-    for hyperRect in data:
-        for lineSeg in lineSegs:
-            x = []
-            y = []
-            for pt in lineSeg:
-                xval = hyperRect[xaxis][pt[0]]
-                yval = hyperRect[yaxis][pt[1]]
-                x.append(xval)
-                y.append(yval)
-            newdata.append([x,y])
+    for line in data:
+        x = []
+        y = []
+        for pt in line:
+            x.append(pt[0])
+            y.append(pt[1])
+        newdata.append([x,y])
     return newdata
 
 def plot(data, endpoints = False, color_scheme = 'k'):
@@ -63,12 +60,5 @@ if __name__ == '__main__':
     else:
         filename = 'data.txt'
 
-    if len(sys.argv) > 3:
-	xaxis = int(sys.argv[2])
-	yaxis = int(sys.argv[3])
-    else:
-	xaxis = 0
-	yaxis = 1
-
     data = readPath(filename)
-    plot(plot_projection(data, xaxis, yaxis))
+    plot(plot_vector_field(data), False)

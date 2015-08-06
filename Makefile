@@ -22,11 +22,11 @@ vanderpol: compile
 
 visual_pendulum: compile
 	./build/vector_field PENDULUM > data.txt
-	./plotSolution.py "VectorField"
+	./plotVectorField.py
 
 visual_vanderpol: compile
 	./build/vector_field VANDERPOL > data.txt
-	./plotSolution.py "VectorField"
+	./plotVectorField.py
 
 ctags:
 	ctags -R -f ./.git/tags .

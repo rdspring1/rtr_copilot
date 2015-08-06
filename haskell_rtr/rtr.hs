@@ -51,26 +51,24 @@ reconstructNeighborhood' hyperRect flatN states rebuild delta' width'
 			minDV = (minV (getMinMaxDerivative (generateNeighborhood hyperRect states False (width flatN)) (num_states^2) (states+1) (1/0) (-1/0)))
 			maxDV = (maxV (getMinMaxDerivative (generateNeighborhood hyperRect states True (width flatN)) (num_states^2) (states+1) (1/0) (-1/0)))
 			num_states = 4
-			reachTimeStep = 0.0075
+			reachTimeStep = 0.0006
 
 generateNeighborhood :: [Interval] -> Int -> Bool -> [Interval] -> [Interval]
 generateNeighborhood _ _ _ [] = []
 generateNeighborhood [] _ _ _ = []
-generateNeighborhood (x:xs) 1 False (y:ys) = (Interval newMin newMax):(generateNeighborhood xs (-1) False ys)
-	where	newMax = (if (width > 0) then (flatMax + width) else flatMax)
+generateNeighborhood (x:xs) 0 False (y:ys) = (Interval newMin newMax):(generateNeighborhood xs (-1) False ys)
+	where	newMax = (if (width > 0) then (flatMin + width) else flatMin)
 		newMin = (if (width <= 0) then (flatMin + width) else flatMin)
-		flatMax = (minV x)
-		flatMin = (minV x) 
+		flatMin = (minV x)
 		width = (minV y)
-generateNeighborhood (x:xs) 1 True (y:ys) = (Interval newMin newMax):(generateNeighborhood xs (-1) True ys)
+generateNeighborhood (x:xs) 0 True (y:ys) = (Interval newMin newMax):(generateNeighborhood xs (-1) True ys)
 	where	newMax = (if (width > 0) then (flatMax + width) else flatMax)
-		newMin = (if (width <= 0) then (flatMin + width) else flatMin) 
+		newMin = (if (width <= 0) then (flatMax + width) else flatMax)
 		flatMax = (maxV x)
-		flatMin = (maxV x) 
-		width = (minV y)
+		width = (maxV y)
 generateNeighborhood (x:xs) states maxFace (y:ys) = (Interval newMin newMax):(generateNeighborhood xs (states-1) maxFace ys)
 	where	newMin = (if ((minV y) < 0) then ((minV x) + (minV y)) else (minV x))
-		newMax = (if ((maxV y) < 0) then ((maxV x) + (maxV y)) else (maxV x))
+		newMax = (if ((maxV y) > 0) then ((maxV x) + (maxV y)) else (maxV x))
 
 resampleDerivative :: Bool -> Float -> Float -> Bool
 resampleDerivative maxFace prevDV currDV
