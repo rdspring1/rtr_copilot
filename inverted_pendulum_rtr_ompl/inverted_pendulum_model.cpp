@@ -126,14 +126,14 @@ void PendulumPostIntegration (const ob::State* /*state*/, const oc::Control* /*c
 	nonlinear_pendulum_params.rset->dims[3].max = omega->value;
 
 	// Print Current State and RTR Monitor State
-	std::cout << pos->values[0] << " " << theta->value << " " << vel->values[0] << " " << omega->value;
+	std::cout << pos->values[0] << " " << theta->value << " " << vel->values[0] << " " << omega->value << std::endl;
 	if(!face_lift(&nonlinear_pendulum_params, NONLINEAR_PENDULUM_REACH_TIME, false))
 	{
-		std::cout << " Dynamic_System_Failure" << std::endl;
+		std::cout << "Dynamic_System_Failure" << std::endl;
 	}
 	else
 	{
-		std::cout << " Safe" << std::endl;
+		std::cout << "Safe" << std::endl;
 	}
 }
 

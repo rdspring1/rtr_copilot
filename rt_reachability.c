@@ -16,6 +16,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef M_PI
+#define M_PI 3.14159
+#endif
+
 // Objective: Keep angle of inverted pendulum upright 
 int main(int argc, char** argv)
 {

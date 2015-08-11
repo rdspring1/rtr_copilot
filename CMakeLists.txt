@@ -3,6 +3,7 @@ project (rtr_copilot)
 
 set (CMAKE_C_FLAGS			"-std=c99 -pedantic -g -O0")
 set (CMAKE_CXX_FLAGS		"-std=c++11 -pedantic -g -O0")
+set (CMAKE_EXE_LINKER_FLAGS "-Wl,-rpath /usr/local/lib/x86_64-linux-gnu")
 
 include_directories ("${PROJECT_SOURCE_DIR}/include")
 include_directories (${CMAKE_SOURCE_DIR})
@@ -40,4 +41,5 @@ target_link_libraries (ompl_rtr_monitor
 	${Boost_PROGRAM_OPTIONS_LIBRARY}
 	ompl
 	ompl_app
+	ompl_app_base
 	)

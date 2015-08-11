@@ -2,7 +2,6 @@
 
 bool face_lift(struct Monitor * const params, double reachTimeRemaining, bool debug)
 {
-	//print_rset(params);
 	while(reachTimeRemaining > 0)
 	{
 		if(debug)
@@ -12,6 +11,7 @@ bool face_lift(struct Monitor * const params, double reachTimeRemaining, bool de
 
 		if(!check_rset(params))
 		{
+			print_rset(params);
 			return false;
 		}
 
@@ -30,6 +30,7 @@ bool face_lift(struct Monitor * const params, double reachTimeRemaining, bool de
 		reachTimeRemaining -= advanceReachTime;
 		//printf("remaining time: %f\n", reachTimeRemaining);
 	}
+	print_rset(params);
 	return true;
 }
 

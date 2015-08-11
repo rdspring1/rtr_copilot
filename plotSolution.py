@@ -42,7 +42,7 @@ def plot(data, endpoints = False, color_scheme = 'k'):
     for line in data:
         ax.plot(line[0], line[1], color_scheme)
 	if endpoints:
-            ax.plot(line[0][1], line[1][1], 'ro')
+        ax.plot(line[0][1], line[1][1], 'ro')
 
     plt.axis('equal')
     plt.show()
